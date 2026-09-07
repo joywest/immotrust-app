@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html class="light" lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: gap: content:">
+    <title>ImmoTrust Elite - Accès Privé</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#c5c6cd",
+                        "primary-container": "#0d1c32",
+                        "secondary": "#775a19",
+                        "secondary-fixed": "#ffdea5",
+                        "surface": "#f9f9fb",
+                        "on-surface-variant": "#44474d",
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .navy-gradient { background: linear-gradient(135deg, #0d1c32 0%, #1a2a44 100%); }
+        .input-elite { background: #ffffff; border: 1px solid #e2e2e4; transition: all 0.3s ease; }
+        .input-elite:focus { border-color: #0d1c32; box-shadow: 0 0 0 4px rgba(13, 28, 50, 0.05); outline: none; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body min-h-screen flex flex-col items-center overflow-y-auto overflow-x-hidden">
+
+<div class="fixed inset-0 pointer-events-none">
+    <div class="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-primary-container/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-[-5%] left-[-5%] w-[400px] h-[400px] bg-secondary/5 rounded-full blur-3xl"></div>
+</div>
+
+<main class="relative z-10 w-full max-w-[430px] min-h-screen flex flex-col px-8 py-12">
+    
+    <header class="flex flex-col items-center gap-4 mb-12">
+        <div class="w-12 h-12 navy-gradient rounded-xl flex items-center justify-center shadow-lg cursor-pointer" onclick="window.location.href='index.html'">
+            <span class="material-symbols-outlined text-secondary-fixed">shield_person</span>
+        </div>
+        <h1 class="font-headline uppercase tracking-[0.2em] text-[10px] font-extrabold text-primary-container/50">ImmoTrust Elite</h1>
+    </header>
+
+    <div id="auth-content"></div>
+
+    <div class="flex items-center gap-4 my-8 opacity-20">
+        <div class="h-[1px] flex-1 bg-primary-container"></div>
+        <span class="text-[10px] font-bold">OU</span>
+        <div class="h-[1px] flex-1 bg-primary-container"></div>
+    </div>
+
+    <button id="google-btn" class="w-full py-4 border-2 border-primary-container/10 rounded-xl flex items-center justify-center gap-3 hover:bg-white transition-all mb-8">
+        <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google">
+        <span class="text-sm font-bold text-primary-container">Continuer avec Google</span>
+    </button>
+
+    <footer class="mt-auto pt-10 text-center flex flex-col gap-4">
+        <div id="auth-toggle-text"></div>
+        <div class="flex justify-center gap-1.5 opacity-30">
+            <div class="w-1.5 h-1.5 rounded-full bg-outline-variant"></div>
+            <div class="w-6 h-1.5 rounded-full bg-primary-container"></div>
+            <div class="w-1.5 h-1.5 rounded-full bg-outline-variant"></div>
+        </div>
+    </footer>
+</main>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyARvYr3Q9J58X9eyY8lo7CYbdGuJo_A6iU",
+        authDomain: "immotrust-ed194.firebaseapp.com",
+        databaseURL: "https://immotrust-ed194-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "immotrust-ed194",
+        storageBucket: "immotrust-ed194.firebasestorage.app",
+        messagingSenderId: "6876164261",
+        appId: "1:6876164261:web:030cc1f107629d82675d4c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    const contentDiv = document.getElementById('auth-content');
+    const toggleDiv = document.getElementById('auth-toggle-text');
+
+    window.showLogin = function() {
+        contentDiv.innerHTML = `
+            <section class="mb-10 text-center">
+                <h2 class="font-headline text-2xl font-extrabold text-primary-container mb-2">Accès Propriétaire</h2>
+                <p class="text-on-surface-variant text-sm">Veuillez renseigner vos identifiants.</p>
+            </section>
+            <form id="login-form" class="flex flex-col gap-5">
+                <div class="flex flex-col gap-2">
+                    <label class="font-label text-[11px] uppercase tracking-wider font-bold text-primary-container/70 ml-1">Email Professionnel</label>
+                    <div class="relative"><span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl">mail</span>
+                    <input type="email" id="login-email" required placeholder="nom@exemple.com" class="input-elite w-full py-4 pl-12 pr-4 rounded-xl text-sm font-medium"></div>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label class="font-label text-[11px] uppercase tracking-wider font-bold text-primary-container/70 ml-1">Mot de passe</label>
+                    <div class="relative"><span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl">lock</span>
+                    <input type="password" id="login-pass" required placeholder="••••••••" class="input-elite w-full py-4 pl-12 pr-4 rounded-xl text-sm font-medium"></div>
+                </div>
+                <button type="submit" class="navy-gradient w-full py-5 mt-4 rounded-xl flex items-center justify-center gap-3 shadow-xl text-secondary-fixed font-bold text-sm uppercase tracking-widest">Se Connecter</button>
+            </form>`;
+        
+        toggleDiv.innerHTML = `
+            <p class="text-sm text-on-surface-variant">Nouveau sur la plateforme ? 
+            <button onclick="showSignup()" class="text-primary-container font-bold underline underline-offset-4">Créer un compte</button></p>`;
+
+        document.getElementById('login-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-pass').value;
+            try {
+                const cred = await signInWithEmailAndPassword(auth, email, pass);
+                // Ne jamais faire confiance à un rôle stocké côté client : on relit toujours
+                // le profil depuis Realtime Database après authentification.
+                const profileSnap = await get(ref(db, 'users/' + cred.user.uid));
+                const role = profileSnap.exists() ? profileSnap.val().role : null;
+                if (role === 'locataire') {
+                    window.location.href = 'tenant-dashboard.html';
+                } else {
+                    window.location.href = 'dashboard.html';
+                }
+            } catch (error) { alert("Erreur : " + error.message); }
+        };
+    }
+
+    window.showSignup = function() {
+        contentDiv.innerHTML = `
+            <section class="mb-10 text-center">
+                <h2 class="font-headline text-2xl font-extrabold text-primary-container mb-2">Créer un compte</h2>
+                <p class="text-on-surface-variant text-sm">Rejoignez l'élite de la gestion immobilière.</p>
+            </section>
+            <form id="signup-form" class="flex flex-col gap-5">
+                <div class="flex flex-col gap-2">
+                    <label class="font-label text-[11px] uppercase tracking-wider font-bold text-primary-container/70 ml-1">Nom Complet</label>
+                    <input type="text" id="reg-name" required placeholder="Ex: Jean Dupont" class="input-elite w-full py-4 px-4 rounded-xl text-sm font-medium">
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label class="font-label text-[11px] uppercase tracking-wider font-bold text-primary-container/70 ml-1">Email</label>
+                    <input type="email" id="reg-email" required placeholder="votre@email.com" class="input-elite w-full py-4 px-4 rounded-xl text-sm font-medium">
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label class="font-label text-[11px] uppercase tracking-wider font-bold text-primary-container/70 ml-1">Mot de passe</label>
+                    <input type="password" id="reg-pass" required placeholder="••••••••" class="input-elite w-full py-4 px-4 rounded-xl text-sm font-medium">
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label class="font-label text-[11px] uppercase tracking-wider font-bold text-primary-container/70 ml-1">Vous êtes :</label>
+                    <select id="reg-role" class="input-elite w-full py-4 px-4 rounded-xl text-sm font-medium appearance-none">
+                        <option value="proprietaire">Propriétaire Particulier</option>
+                        <option value="agence">Agence Immobilière</option>
+                        <option value="gestionnaire">Gestionnaire Indépendant</option>
+                    </select>
+                </div>
+                <button type="submit" class="navy-gradient w-full py-5 mt-4 rounded-xl flex items-center justify-center gap-3 shadow-xl text-secondary-fixed font-bold text-sm uppercase tracking-widest">S'inscrire</button>
+            </form>`;
+        
+        toggleDiv.innerHTML = `
+            <p class="text-sm text-on-surface-variant">Déjà membre ? 
+            <button onclick="showLogin()" class="text-primary-container font-bold underline underline-offset-4">Se connecter</button></p>`;
+
+        document.getElementById('signup-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            const pass = document.getElementById('reg-pass').value;
+            const role = document.getElementById('reg-role').value;
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+                const user = userCredential.user;
+                
+                // Enregistre les infos de base dans Realtime Database
+                await set(ref(db, 'users/' + user.uid), {
+                    username: name,
+                    email: email,
+                    role: role,
+                    onboardingComplete: false
+                });
+
+                // REDIRECTION VERS ONBOARDING
+                window.location.href = 'onboarding.html';
+            } catch (error) { alert("Erreur : " + error.message); }
+        };
+    }
+
+    // Initialisation
+    const params = new URLSearchParams(window.location.search);
+    if(params.get('mode') === 'signup') showSignup();
+    else showLogin();
+</script>
+<script src="cordova.js"></script>
+</body>
+</html>

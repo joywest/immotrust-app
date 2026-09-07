@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html class="light" lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: gap: content:">
+    <title>ImmoTrust Elite - Invitation Locataire</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#c5c6cd",
+                        "primary-container": "#0d1c32",
+                        "secondary": "#775a19",
+                        "secondary-fixed": "#ffdea5",
+                        "surface": "#f9f9fb",
+                        "on-surface-variant": "#44474d",
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .navy-gradient { background: linear-gradient(135deg, #0d1c32 0%, #1a2a44 100%); }
+        .input-elite { background: #ffffff; border: 1px solid #e2e2e4; transition: all 0.3s ease; }
+        .input-elite:focus { border-color: #0d1c32; box-shadow: 0 0 0 4px rgba(13, 28, 50, 0.05); outline: none; }
+        .input-elite:disabled { color: #9ca3af; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body min-h-screen flex flex-col items-center overflow-y-auto overflow-x-hidden">
+
+<div class="fixed inset-0 pointer-events-none">
+    <div class="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-primary-container/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-[-5%] left-[-5%] w-[400px] h-[400px] bg-secondary/5 rounded-full blur-3xl"></div>
+</div>
+
+<main class="relative z-10 w-full max-w-[430px] min-h-screen flex flex-col px-8 py-12">
+
+    <header class="flex flex-col items-center gap-4 mb-10">
+        <div class="w-12 h-12 navy-gradient rounded-xl flex items-center justify-center shadow-lg">
+            <span class="material-symbols-outlined text-secondary-fixed">key</span>
+        </div>
+        <h1 class="font-headline uppercase tracking-[0.2em] text-[10px] font-extrabold text-primary-container/50">Invitation Locataire</h1>
+    </header>
+
+    <!-- État : chargement -->
+    <div id="state-loading" class="flex-1 flex flex-col items-center justify-center gap-4 text-center">
+        <div class="w-8 h-8 border-2 border-primary-container/20 border-t-primary-container rounded-full animate-spin"></div>
+        <p class="text-sm text-on-surface-variant">Vérification de votre invitation...</p>
+    </div>
+
+    <!-- État : invitation invalide -->
+    <div id="state-invalid" class="hidden flex-1 flex flex-col items-center justify-center gap-5 text-center">
+        <div class="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center">
+            <span class="material-symbols-outlined text-red-500 text-3xl">error</span>
+        </div>
+        <div>
+            <h2 class="font-headline text-xl font-extrabold text-primary-container mb-2">Invitation indisponible</h2>
+            <p id="invalid-message" class="text-sm text-on-surface-variant max-w-[280px] mx-auto"></p>
+        </div>
+        <button onclick="window.location.href='auth.html'" class="navy-gradient px-6 py-4 rounded-xl text-secondary-fixed font-bold text-sm uppercase tracking-widest">Aller à la connexion</button>
+    </div>
+
+    <!-- État : formulaire de création de compte -->
+    <div id="state-form" class="hidden">
+        <section class="mb-8 text-center">
+            <h2 class="font-headline text-2xl font-extrabold text-primary-container mb-2">Bienvenue <span id="tenant-name-display"></span></h2>
+            <p class="text-on-surface-variant text-sm">Créez votre accès pour suivre votre logement, vos loyers et vos quittances.</p>
+        </section>
+
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 mb-8 space-y-3">
+            <div class="flex justify-between items-center">
+                <span class="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Logement</span>
+                <span id="info-property" class="text-sm font-bold text-primary-container"></span>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Loyer mensuel</span>
+                <span id="info-rent" class="text-sm font-bold text-primary-container"></span>
+            </div>
+        </div>
+
+        <form id="invite-form" class="flex flex-col gap-5">
+            <div class="flex flex-col gap-2">
+                <label class="font-label text-[11px] uppercase tracking-wider font-bold text-primary-container/70 ml-1">Email</label>
+                <input type="email" id="invite-email" required placeholder="votre@email.com" class="input-elite w-full py-4 px-4 rounded-xl text-sm font-medium">
+            </div>
+            <div class="flex flex-col gap-2">
+                <label class="font-label text-[11px] uppercase tracking-wider font-bold text-primary-container/70 ml-1">Mot de passe</label>
+                <input type="password" id="invite-password" required minlength="6" placeholder="Au moins 6 caractères" class="input-elite w-full py-4 px-4 rounded-xl text-sm font-medium">
+            </div>
+            <div class="flex flex-col gap-2">
+                <label class="font-label text-[11px] uppercase tracking-wider font-bold text-primary-container/70 ml-1">Confirmer le mot de passe</label>
+                <input type="password" id="invite-password-confirm" required minlength="6" placeholder="••••••••" class="input-elite w-full py-4 px-4 rounded-xl text-sm font-medium">
+            </div>
+            <button type="submit" id="invite-submit-btn" class="navy-gradient w-full py-5 mt-4 rounded-xl flex items-center justify-center gap-3 shadow-xl text-secondary-fixed font-bold text-sm uppercase tracking-widest">Créer mon accès</button>
+        </form>
+    </div>
+
+    <footer class="mt-auto pt-10 text-center flex flex-col gap-4">
+        <div class="flex justify-center gap-1.5 opacity-30">
+            <div class="w-1.5 h-1.5 rounded-full bg-outline-variant"></div>
+            <div class="w-1.5 h-1.5 rounded-full bg-outline-variant"></div>
+            <div class="w-6 h-1.5 rounded-full bg-primary-container"></div>
+        </div>
+    </footer>
+</main>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { verifyInvitation, acceptInvitation } from "./js/services/invitation-service.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyARvYr3Q9J58X9eyY8lo7CYbdGuJo_A6iU",
+        authDomain: "immotrust-ed194.firebaseapp.com",
+        databaseURL: "https://immotrust-ed194-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "immotrust-ed194",
+        storageBucket: "immotrust-ed194.firebasestorage.app",
+        messagingSenderId: "6876164261",
+        appId: "1:6876164261:web:030cc1f107629d82675d4c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    const params = new URLSearchParams(window.location.search);
+    const invitationId = params.get("id");
+    const rawCode = params.get("code");
+
+    const showState = (id) => {
+        ["state-loading", "state-invalid", "state-form"].forEach((s) => {
+            document.getElementById(s).classList.toggle("hidden", s !== id);
+        });
+    };
+
+    const invalidMessages = {
+        not_found: "Ce lien d'invitation est introuvable. Vérifiez qu'il a été copié en entier.",
+        expired: "Cette invitation a expiré. Merci de demander à votre propriétaire de vous en envoyer une nouvelle.",
+        used: "Cette invitation a déjà été utilisée. Connectez-vous avec le compte déjà créé.",
+        bad_code: "Le code d'invitation est invalide."
+    };
+
+    let currentInvitation = null;
+
+    async function init() {
+        const result = await verifyInvitation(db, invitationId, rawCode);
+
+        if (!result.ok) {
+            document.getElementById("invalid-message").innerText =
+                invalidMessages[result.reason] || "Impossible de vérifier cette invitation.";
+            showState("state-invalid");
+            return;
+        }
+
+        currentInvitation = result.invitation;
+
+        document.getElementById("tenant-name-display").innerText = currentInvitation.tenantName || "";
+        document.getElementById("info-property").innerText = currentInvitation.propertyName || "—";
+
+        // Récupère le loyer mensuel depuis le contrat lié
+        try {
+            const leaseSnap = await get(ref(db, `leases/${currentInvitation.leaseId}`));
+            const rent = leaseSnap.exists() ? Number(leaseSnap.val().monthlyRent || 0) : 0;
+            document.getElementById("info-rent").innerText = `${new Intl.NumberFormat("fr-FR").format(rent)} FCFA`;
+        } catch (e) {
+            document.getElementById("info-rent").innerText = "—";
+        }
+
+        // Pré-remplit l'email connu du locataire s'il existe déjà
+        try {
+            const tenantSnap = await get(ref(db, `tenants/${currentInvitation.tenantId}`));
+            if (tenantSnap.exists() && tenantSnap.val().email) {
+                document.getElementById("invite-email").value = tenantSnap.val().email;
+            }
+        } catch (e) { /* pas bloquant */ }
+
+        showState("state-form");
+    }
+
+    document.getElementById("invite-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = document.getElementById("invite-email").value;
+        const password = document.getElementById("invite-password").value;
+        const passwordConfirm = document.getElementById("invite-password-confirm").value;
+        const btn = document.getElementById("invite-submit-btn");
+
+        if (password !== passwordConfirm) {
+            alert("Les mots de passe ne correspondent pas.");
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerText = "Création en cours...";
+
+        try {
+            await acceptInvitation(auth, db, invitationId, currentInvitation, { email, password });
+            window.location.href = "tenant-dashboard.html";
+        } catch (error) {
+            alert("Erreur : " + error.message);
+            btn.disabled = false;
+            btn.innerText = "Créer mon accès";
+        }
+    });
+
+    init();
+</script>
+<script src="cordova.js"></script>
+</body>
+</html>

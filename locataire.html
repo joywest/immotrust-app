@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html class="light" lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: gap: content:">
+    <title>ImmoTrust Elite - Espace Locataire</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-container": "#0d1c32",
+                        "secondary": "#775a19",
+                        "secondary-fixed": "#ffdea5",
+                        "surface": "#f9f9fb",
+                        "background": "#f9f9fb",
+                    },
+                    "fontFamily": { "headline": ["Manrope"], "body": ["Inter"] }
+                },
+            },
+        }
+    </script>
+    <style>
+        .luxury-gradient { background: linear-gradient(135deg, #0d1c32 0%, #1a2b45 100%); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .status-pill { display:inline-flex; align-items:center; gap:6px; padding:6px 14px; border-radius:9999px; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; }
+    </style>
+</head>
+<body class="bg-gray-200 font-body text-[#1a1c1d] flex justify-center">
+
+<div class="bg-background w-full max-w-[430px] min-h-screen shadow-2xl relative overflow-hidden flex flex-col">
+
+    <header class="absolute top-0 w-full z-40 flex justify-between items-center px-6 py-4 bg-surface/80 backdrop-blur-md">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center border-2 border-secondary-fixed shadow-sm">
+                <span class="material-symbols-outlined text-secondary-fixed">home</span>
+            </div>
+            <div>
+                <h1 class="text-[10px] font-bold text-primary-container opacity-50 uppercase tracking-tighter">Espace Locataire</h1>
+                <p id="tenant-greeting" class="text-sm font-headline font-extrabold text-primary-container leading-none">Bonjour</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 pt-24 pb-32 px-6 space-y-6 overflow-y-auto no-scrollbar">
+
+        <!-- ACCUEIL -->
+        <section id="view-home" class="view-section space-y-6">
+
+            <div id="loading-home" class="flex flex-col items-center justify-center gap-3 py-20 text-center">
+                <div class="w-8 h-8 border-2 border-primary-container/20 border-t-primary-container rounded-full animate-spin"></div>
+                <p class="text-sm text-gray-400">Chargement de votre logement...</p>
+            </div>
+
+            <div id="home-content" class="hidden space-y-6">
+                <div class="luxury-gradient p-6 rounded-[28px] shadow-xl relative overflow-hidden">
+                    <span class="text-[10px] uppercase tracking-widest text-secondary-fixed font-bold">Votre logement</span>
+                    <div class="mt-2"><span id="home-property-name" class="text-2xl font-headline font-extrabold text-white">—</span></div>
+                    <div class="mt-4 flex items-baseline gap-2">
+                        <span id="home-rent" class="text-xl font-headline font-black text-secondary-fixed">0 FCFA</span>
+                        <span class="text-[10px] text-white/60 font-bold uppercase">/ mois</span>
+                    </div>
+                    <span class="material-symbols-outlined absolute right-4 bottom-4 text-secondary opacity-30 text-4xl">apartment</span>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Statut du mois</span>
+                        <span id="home-status-pill" class="status-pill bg-gray-100 text-gray-500">—</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-[9px] uppercase tracking-widest text-gray-400 font-bold">Attendu</p>
+                            <p id="home-expected" class="text-sm font-headline font-extrabold text-primary-container">—</p>
+                        </div>
+                        <div>
+                            <p class="text-[9px] uppercase tracking-widest text-gray-400 font-bold">Payé</p>
+                            <p id="home-paid" class="text-sm font-headline font-extrabold text-primary-container">—</p>
+                        </div>
+                        <div>
+                            <p class="text-[9px] uppercase tracking-widest text-gray-400 font-bold">Restant</p>
+                            <p id="home-remaining" class="text-sm font-headline font-extrabold text-primary-container">—</p>
+                        </div>
+                        <div>
+                            <p class="text-[9px] uppercase tracking-widest text-gray-400 font-bold">Échéance</p>
+                            <p id="home-due" class="text-sm font-headline font-extrabold text-primary-container">—</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <div class="flex justify-between items-center">
+                        <span class="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Caution</span>
+                        <span id="home-deposit-pill" class="status-pill bg-gray-100 text-gray-500">—</span>
+                    </div>
+                    <div class="mt-3 flex justify-between text-sm">
+                        <span class="text-gray-400">Versée</span>
+                        <span id="home-deposit-paid" class="font-bold text-primary-container">—</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ONGLETS À VENIR -->
+        <section id="view-paiements" class="view-section hidden">
+            <div class="flex flex-col items-center justify-center gap-3 py-20 text-center">
+                <span class="material-symbols-outlined text-4xl text-gray-300">receipt_long</span>
+                <p class="font-headline font-bold text-primary-container">Historique des paiements</p>
+                <p class="text-xs text-gray-400 max-w-[240px]">Bientôt disponible — vous pourrez consulter chaque mois payé et vos quittances ici.</p>
+            </div>
+        </section>
+        <section id="view-documents" class="view-section hidden">
+            <div class="flex flex-col items-center justify-center gap-3 py-20 text-center">
+                <span class="material-symbols-outlined text-4xl text-gray-300">folder_open</span>
+                <p class="font-headline font-bold text-primary-container">Documents</p>
+                <p class="text-xs text-gray-400 max-w-[240px]">Bientôt disponible — votre contrat et vos documents apparaîtront ici.</p>
+            </div>
+        </section>
+        <section id="view-maintenance" class="view-section hidden">
+            <div class="flex flex-col items-center justify-center gap-3 py-20 text-center">
+                <span class="material-symbols-outlined text-4xl text-gray-300">construction</span>
+                <p class="font-headline font-bold text-primary-container">Maintenance</p>
+                <p class="text-xs text-gray-400 max-w-[240px]">Bientôt disponible — vous pourrez signaler un problème et suivre son traitement.</p>
+            </div>
+        </section>
+        <section id="view-profil" class="view-section hidden space-y-4">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-1">
+                <p class="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Email</p>
+                <p id="profil-email" class="text-sm font-bold text-primary-container">—</p>
+            </div>
+            <button onclick="handleLogout()" class="w-full bg-red-50 text-red-600 py-4 rounded-2xl font-black uppercase text-xs tracking-widest flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-lg">logout</span> Déconnexion
+            </button>
+        </section>
+    </main>
+
+    <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 flex justify-around items-center px-4 pb-6 pt-4 bg-white/90 backdrop-blur-xl border-t border-gray-100 shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
+        <a href="javascript:showView('home')" id="nav-home" class="flex flex-col items-center text-primary-container nav-link transition-all active:scale-90">
+            <span class="material-symbols-outlined text-[24px]">home</span>
+            <span class="text-[9px] font-black uppercase mt-1">Accueil</span>
+        </a>
+        <a href="javascript:showView('paiements')" id="nav-paiements" class="flex flex-col items-center text-gray-400 nav-link transition-all active:scale-90">
+            <span class="material-symbols-outlined text-[24px]">receipt_long</span>
+            <span class="text-[9px] font-black uppercase mt-1">Paiements</span>
+        </a>
+        <a href="javascript:showView('documents')" id="nav-documents" class="flex flex-col items-center text-gray-400 nav-link transition-all active:scale-90">
+            <span class="material-symbols-outlined text-[24px]">folder_open</span>
+            <span class="text-[9px] font-black uppercase mt-1">Documents</span>
+        </a>
+        <a href="javascript:showView('maintenance')" id="nav-maintenance" class="flex flex-col items-center text-gray-400 nav-link transition-all active:scale-90">
+            <span class="material-symbols-outlined text-[24px]">construction</span>
+            <span class="text-[9px] font-black uppercase mt-1">Maintenance</span>
+        </a>
+        <a href="javascript:showView('profil')" id="nav-profil" class="flex flex-col items-center text-gray-400 nav-link transition-all active:scale-90">
+            <span class="material-symbols-outlined text-[24px]">person</span>
+            <span class="text-[9px] font-black uppercase mt-1">Profil</span>
+        </a>
+    </nav>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyARvYr3Q9J58X9eyY8lo7CYbdGuJo_A6iU",
+        authDomain: "immotrust-ed194.firebaseapp.com",
+        databaseURL: "https://immotrust-ed194-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "immotrust-ed194",
+        storageBucket: "immotrust-ed194.firebasestorage.app",
+        messagingSenderId: "6876164261",
+        appId: "1:6876164261:web:030cc1f107629d82675d4c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    window.showView = (name) => {
+        document.querySelectorAll(".view-section").forEach((s) => s.classList.add("hidden"));
+        document.getElementById(`view-${name}`).classList.remove("hidden");
+        document.querySelectorAll(".nav-link").forEach((n) => n.classList.remove("text-primary-container"));
+        document.querySelectorAll(".nav-link").forEach((n) => n.classList.add("text-gray-400"));
+        const activeNav = document.getElementById(`nav-${name}`);
+        if (activeNav) { activeNav.classList.remove("text-gray-400"); activeNav.classList.add("text-primary-container"); }
+    };
+
+    window.handleLogout = () => {
+        signOut(auth).then(() => window.location.href = "index.html");
+    };
+
+    function monthKeyNow() {
+        const d = new Date();
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+    }
+
+    function formatFCFA(n) {
+        return `${new Intl.NumberFormat("fr-FR").format(Number(n || 0))} FCFA`;
+    }
+
+    function applyStatusPill(el, status) {
+        const map = {
+            paid: ["bg-green-50", "text-green-600", "✓ Payé"],
+            partial: ["bg-amber-50", "text-amber-600", "⚠ Partiel"],
+            unpaid: ["bg-red-50", "text-red-600", "Impayé"],
+            late: ["bg-red-50", "text-red-600", "En retard"],
+            cancelled: ["bg-gray-100", "text-gray-400", "Annulé"]
+        };
+        const [bg, text, label] = map[status] || ["bg-gray-100", "text-gray-500", "—"];
+        el.className = `status-pill ${bg} ${text}`;
+        el.innerText = label;
+    }
+
+    async function loadTenantHome(uid) {
+        const userSnap = await get(ref(db, `users/${uid}`));
+        if (!userSnap.exists() || userSnap.val().role !== "locataire") {
+            // Ce compte n'est pas un compte locataire : on ne montre pas cet espace.
+            window.location.href = "dashboard.html";
+            return;
+        }
+        const profile = userSnap.val();
+        document.getElementById("tenant-greeting").innerText = `Bonjour, ${profile.name || ""}`;
+        document.getElementById("profil-email").innerText = profile.email || "";
+
+        const [tenantSnap, leaseSnap] = await Promise.all([
+            get(ref(db, `tenants/${profile.tenantId}`)),
+            get(ref(db, `leases/${profile.leaseId}`))
+        ]);
+
+        const lease = leaseSnap.exists() ? leaseSnap.val() : {};
+        document.getElementById("home-rent").innerText = formatFCFA(lease.monthlyRent);
+
+        // Nom du logement (encore dans users/{ownerId}/properties tant que la migration complète n'est pas faite)
+        if (lease.propertyId) {
+            const propSnap = await get(ref(db, `users/${profile.ownerId}/properties/${lease.propertyId}`));
+            document.getElementById("home-property-name").innerText = propSnap.exists() ? (propSnap.val().nom || "Logement") : "Logement";
+        }
+
+        // Obligation du mois courant
+        const obligationsSnap = await get(ref(db, "rentObligations"));
+        let currentObligation = null;
+        if (obligationsSnap.exists()) {
+            obligationsSnap.forEach((child) => {
+                const o = child.val();
+                if (o.leaseId === profile.leaseId && o.monthKey === monthKeyNow()) {
+                    currentObligation = o;
+                }
+            });
+        }
+
+        if (currentObligation) {
+            // Le module Paiements (phase suivante) alimentera le montant réellement payé.
+            // Tant qu'aucun paiement n'est enregistré, le statut reste "unpaid" et le restant = attendu.
+            const paidSoFar = currentObligation.status === "paid" ? currentObligation.expectedAmount : 0;
+            document.getElementById("home-expected").innerText = formatFCFA(currentObligation.expectedAmount);
+            document.getElementById("home-paid").innerText = formatFCFA(paidSoFar);
+            document.getElementById("home-remaining").innerText = formatFCFA(currentObligation.expectedAmount - paidSoFar);
+            document.getElementById("home-due").innerText = currentObligation.dueDate || "—";
+            applyStatusPill(document.getElementById("home-status-pill"), currentObligation.status);
+        } else {
+            document.getElementById("home-expected").innerText = formatFCFA(lease.monthlyRent);
+            document.getElementById("home-paid").innerText = formatFCFA(0);
+            document.getElementById("home-remaining").innerText = formatFCFA(lease.monthlyRent);
+            document.getElementById("home-due").innerText = "—";
+            applyStatusPill(document.getElementById("home-status-pill"), "unpaid");
+        }
+
+        // Caution
+        const depositsSnap = await get(ref(db, "deposits"));
+        let deposit = null;
+        if (depositsSnap.exists()) {
+            depositsSnap.forEach((child) => {
+                const d = child.val();
+                if (d.leaseId === profile.leaseId) deposit = d;
+            });
+        }
+        if (deposit) {
+            applyStatusPill(document.getElementById("home-deposit-pill"), deposit.status === "paid" ? "paid" : "unpaid");
+            document.getElementById("home-deposit-paid").innerText = formatFCFA(deposit.paidAmount);
+        }
+
+        document.getElementById("loading-home").classList.add("hidden");
+        document.getElementById("home-content").classList.remove("hidden");
+    }
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            loadTenantHome(user.uid).catch((e) => console.error("Erreur chargement espace locataire:", e));
+        } else {
+            window.location.href = "auth.html";
+        }
+    });
+</script>
+<script src="cordova.js"></script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: gap: content:">
+<title>ImmoTrust Elite - Bienvenue</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#c5c6cd",
+                        "primary-fixed-dim": "#b9c7e4",
+                        "inverse-on-surface": "#f0f0f2",
+                        "tertiary-container": "#101c2a",
+                        "surface-container": "#eeeef0",
+                        "surface": "#f9f9fb",
+                        "on-tertiary-container": "#798596",
+                        "surface-tint": "#515f78",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed-variant": "#3c4857",
+                        "surface-container-low": "#f3f3f5",
+                        "on-tertiary-fixed": "#101c2a",
+                        "on-secondary-fixed-variant": "#5d4201",
+                        "secondary-fixed": "#ffdea5",
+                        "secondary-fixed-dim": "#e9c176",
+                        "tertiary": "#000000",
+                        "inverse-primary": "#b9c7e4",
+                        "on-surface": "#1a1c1d",
+                        "on-primary": "#ffffff",
+                        "on-background": "#1a1c1d",
+                        "tertiary-fixed-dim": "#bbc7da",
+                        "secondary-container": "#fed488",
+                        "tertiary-fixed": "#d7e3f7",
+                        "on-secondary": "#ffffff",
+                        "inverse-surface": "#2f3132",
+                        "on-surface-variant": "#44474d",
+                        "primary-fixed": "#d6e3ff",
+                        "surface-container-highest": "#e2e2e4",
+                        "surface-dim": "#d9dadc",
+                        "surface-container-high": "#e8e8ea",
+                        "on-error": "#ffffff",
+                        "background": "#f9f9fb",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#261900",
+                        "surface-bright": "#f9f9fb",
+                        "primary": "#000000",
+                        "secondary": "#775a19",
+                        "primary-container": "#0d1c32",
+                        "on-primary-fixed": "#0d1c32",
+                        "surface-variant": "#e2e2e4",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed-variant": "#39475f",
+                        "outline": "#75777e",
+                        "on-secondary-container": "#785a1a",
+                        "on-primary-container": "#76849f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.375rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-effect {
+            background: rgba(249, 249, 251, 0.8);
+            backdrop-filter: blur(20px);
+        }
+        .navy-gradient {
+            background: linear-gradient(135deg, #0d1c32 0%, #1a2a44 100%);
+        }
+        body {
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-secondary-fixed selection:text-on-secondary-fixed min-h-screen flex flex-col items-center overflow-y-auto overflow-x-hidden">
+
+<div class="fixed inset-0 pointer-events-none">
+<div class="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-primary-container/5 rounded-full blur-3xl"></div>
+<div class="absolute bottom-[-5%] left-[-5%] w-[400px] h-[400px] bg-secondary/5 rounded-full blur-3xl"></div>
+</div>
+
+<main class="relative z-10 w-full max-w-[430px] min-h-screen flex flex-col justify-between px-8 py-16 md:py-24">
+<header class="flex justify-center items-center">
+<h1 class="font-headline uppercase tracking-[0.2em] text-sm font-extrabold text-primary-container">
+                ImmoTrust Elite
+            </h1>
+</header>
+
+<div class="flex-1 flex items-center justify-center py-12">
+<div class="relative w-full aspect-square max-w-[320px]">
+    <img alt="Immeuble de luxe 3D" class="w-full h-full object-contain filter drop-shadow-[0_20px_50px_rgba(13,28,50,0.15)]" src="https://images.unsplash.com/photo-1582407947304-fd86f028f716?q=80&w=1000&auto=format&fit=crop"/>
+</div>
+</div>
+
+<section class="flex flex-col gap-8">
+<div class="flex flex-col gap-4 text-center">
+<h2 class="font-headline text-3xl font-extrabold tracking-tight text-primary-container leading-[1.1]">
+                    Gérez vos actifs avec une précision d'élite
+                </h2>
+<p class="font-body text-on-surface-variant text-base leading-relaxed max-w-[280px] mx-auto">
+                    Suivez vos revenus, dépenses et locataires en temps réel.
+                </p>
+</div>
+
+<div class="flex flex-col gap-6">
+    <button onclick="window.location.href='auth.html?mode=signup'" class="navy-gradient w-full py-5 rounded-xl flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(13,28,50,0.2)] active:scale-95 transition-all duration-300 group">
+        <span class="font-label uppercase tracking-[0.15em] font-bold text-secondary-fixed text-sm">
+            COMMENCER
+        </span>
+        <span class="material-symbols-outlined text-secondary-fixed text-lg group-hover:translate-x-1 transition-transform">chevron_right</span>
+    </button>
+
+    <div class="flex items-center justify-center gap-2">
+        <span class="text-sm text-on-surface-variant/70 font-medium">Déjà membre ?</span>
+        <button onclick="window.location.href='auth.html?mode=login'" class="text-primary-container font-bold text-sm hover:text-secondary transition-colors underline-offset-4 decoration-secondary/30 decoration-2">
+            Se connecter
+        </button>
+    </div>
+</div>
+</section>
+
+<footer class="mt-12 flex justify-center opacity-30 py-4">
+<div class="flex gap-1.5">
+<div class="w-1.5 h-1.5 rounded-full bg-primary-container"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-outline-variant"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-outline-variant"></div>
+</div>
+</footer>
+</main>
+<script src="cordova.js"></script>
+</body></html>

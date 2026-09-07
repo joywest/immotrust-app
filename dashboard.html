@@ -1,0 +1,2007 @@
+<!DOCTYPE html>
+<html class="light" lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: gap: content:">
+    <title>ImmoTrust Elite - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-container": "#0d1c32",
+                        "secondary": "#775a19",
+                        "secondary-fixed": "#ffdea5",
+                        "surface": "#f9f9fb",
+                        "background": "#f9f9fb",
+                    },
+                    "fontFamily": { "headline": ["Manrope"], "body": ["Inter"] }
+                },
+            },
+        }
+    </script>
+    <style>
+        .luxury-gradient { background: linear-gradient(135deg, #0d1c32 0%, #1a2b45 100%); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* Animation du modal */
+        .modal-enter { transform: translateY(100%); transition: transform 0.3s ease-out; }
+        .modal-active { transform: translateY(0); }
+    </style>
+</head>
+<body class="bg-gray-200 font-body text-[#1a1c1d] flex justify-center">
+
+    <div class="bg-background w-full max-w-[430px] min-h-screen shadow-2xl relative overflow-hidden flex flex-col">
+
+       <header class="absolute top-0 w-full z-40 flex justify-between items-center px-6 py-4 bg-surface/80 backdrop-blur-md">
+    <div class="flex items-center gap-3 cursor-pointer" onclick="toggleModal('menu-profile')">
+        <div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center overflow-hidden border-2 border-secondary-fixed shadow-sm">
+            <span class="material-symbols-outlined text-secondary-fixed">person</span>
+        </div>
+        <div>
+            <h1 class="text-[10px] font-bold text-primary-container opacity-50 uppercase tracking-tighter">Tableau de bord</h1>
+            <p id="user-greeting" class="text-sm font-headline font-extrabold text-primary-container leading-none">Élite Propriétaire</p>
+        </div>
+    </div>
+    
+    <button class="w-10 h-10 flex items-center justify-center rounded-xl bg-white shadow-sm border border-gray-100">
+        <span class="material-symbols-outlined text-primary-container">notifications</span>
+    </button>
+
+    <div id="menu-profile" class="hidden absolute top-20 left-6 w-72 bg-white rounded-[32px] shadow-2xl border border-gray-100 z-50 overflow-hidden modal-enter">
+        <div class="p-5 bg-primary-container text-white">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <p class="text-[10px] font-black uppercase text-secondary-fixed tracking-widest">Statut du Compte</p>
+                    <p class="text-sm font-headline font-bold" id="plan-type">Plan Gratuit</p>
+                </div>
+                <span class="material-symbols-outlined text-secondary-fixed">verified</span>
+            </div>
+            
+            <div class="space-y-1">
+                <div class="flex justify-between text-[10px] font-bold opacity-80 uppercase">
+                    <span>Usage des biens</span>
+                    <span id="property-count">0 / 2</span>
+                </div>
+                <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                    <div id="usage-bar" class="h-full bg-secondary-fixed transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-3 space-y-1">
+           <button onclick="showView('upgrade')" class="w-full flex items-center justify-between p-3 bg-secondary-fixed/20 rounded-2xl border border-secondary-fixed/30 mb-2 active:scale-95 transition-all">
+    <div class="flex items-center gap-3 text-secondary">
+        <span class="material-symbols-outlined">auto_awesome</span>
+        <span class="text-xs font-black uppercase">Passer Pro</span>
+    </div>
+    <span class="material-symbols-outlined text-sm text-secondary">chevron_right</span>
+</button>
+
+           <button onclick="showView('profile-settings')" class="w-full flex items-center gap-3 p-3 hover:bg-gray-50 rounded-2xl transition-all active:scale-95">
+    <div class="w-10 h-10 bg-primary-container/5 rounded-xl flex items-center justify-center">
+        <span class="material-symbols-outlined text-primary-container">manage_accounts</span>
+    </div>
+    <span class="text-sm font-bold text-primary-container">Profil & KYC</span>
+</button>
+
+           <button onclick="showView('docs')" class="w-full flex items-center gap-3 p-3 hover:bg-gray-50 rounded-2xl transition-all active:scale-95">
+    <div class="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center text-gray-500">
+        <span class="material-symbols-outlined">description</span>
+    </div>
+    <span class="text-sm font-bold text-primary-container">Documents Légaux</span>
+</button>
+
+            <button onclick="showView('support')" class="w-full flex items-center gap-3 p-3 hover:bg-gray-50 rounded-2xl transition-colors">
+    <span class="material-symbols-outlined text-primary-container">support_agent</span>
+    <span class="text-sm font-bold text-primary-container">Aide & Support</span>
+</button>
+
+            <div class="h-[1px] bg-gray-100 my-2 mx-3"></div>
+
+            <button onclick="handleLogout()" class="w-full flex items-center gap-3 p-3 hover:bg-red-50 rounded-2xl transition-colors text-red-600">
+                <span class="material-symbols-outlined">logout</span>
+                <span class="text-sm font-black uppercase tracking-widest">Déconnexion</span>
+            </button>
+        </div>
+    </div>
+</header>
+
+        <main class="flex-1 pt-24 pb-32 px-6 space-y-8 overflow-y-auto no-scrollbar">
+    
+    <section id="view-home" class="view-section space-y-8">
+        <div class="space-y-4">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-primary-container">
+                <span class="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Revenu Brut</span>
+                <div class="mt-2"><span id="stat-revenue" class="text-2xl font-headline font-extrabold text-primary-container">0 FCFA</span></div>
+            </div>
+            <div class="luxury-gradient p-6 rounded-2xl shadow-xl relative overflow-hidden">
+                <span class="text-[10px] uppercase tracking-widest text-secondary-fixed font-bold">Bénéfice Net</span>
+                <div class="mt-2"><span id="stat-profit" class="text-3xl font-headline font-extrabold text-secondary-fixed tracking-tight">0 FCFA</span></div>
+                <span class="material-symbols-outlined absolute right-4 bottom-4 text-secondary opacity-30 text-4xl">payments</span>
+            </div>
+        </div>
+
+        <div class="flex justify-around bg-white p-5 rounded-2xl shadow-sm">
+            <button onclick="toggleModal('modal-add')" class="flex flex-col items-center gap-2 group">
+                <div class="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-secondary-fixed transition-colors">
+                    <span class="material-symbols-outlined text-primary-container">add_business</span>
+                </div>
+                <span class="text-[10px] font-bold uppercase text-gray-500">Ajouter</span>
+            </button>
+           <button onclick="openExpenseModal()" class="flex flex-col items-center gap-2 group">
+    <div class="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-red-100 transition-colors">
+        <span class="material-symbols-outlined text-primary-container">tools_wrench</span>
+    </div>
+    <span class="text-[10px] font-bold uppercase text-gray-500">Travaux</span>
+</button>
+            <button onclick="openAddTenantModal()" class="flex flex-col items-center gap-2 group">
+                <div class="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
+                    <span class="material-symbols-outlined text-primary-container">person_add</span>
+                </div>
+                <span class="text-[10px] font-bold uppercase text-gray-500">Locataire</span>
+            </button>
+        </div>
+
+        <div class="space-y-4">
+            <div class="flex justify-between items-center">
+                <h2 class="text-lg font-headline font-bold text-primary-container">Mes Propriétés</h2>
+             <button onclick="openFullPatrimoine()" class="text-secondary font-bold text-xs">Voir tout</button>
+            </div>
+            <div id="property-list" class="space-y-4"></div>
+        </div>
+    </section>
+
+    <section id="view-properties" class="view-section hidden space-y-6">
+        <div class="bg-white p-6 rounded-2xl shadow-sm border-b border-gray-100">
+            <h2 class="text-xl font-headline font-extrabold text-primary-container">Encaisser un loyer</h2>
+            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Sélectionnez la maison qui a payé</p>
+        </div>
+        
+        <div id="properties-payment-list" class="space-y-4"></div>
+    </section>
+   <section id="view-finance" class="view-section hidden space-y-8 pb-20">
+    <div class="flex gap-4 overflow-x-auto no-scrollbar -mx-6 px-6 pt-2">
+        <div class="min-w-[280px] bg-primary-container p-6 rounded-[32px] shadow-xl relative overflow-hidden shrink-0">
+            <span class="text-[10px] uppercase tracking-widest text-white/60 font-black">Cash-Flow Net (Mois)</span>
+            <div class="mt-4">
+                <span id="fin-cashflow" class="text-3xl font-headline font-black text-white">chargement...</span>
+            </div>
+            <div id="cashflow-trend" class="mt-2 flex items-center gap-2 text-secondary-fixed text-[10px] font-bold">
+                </div>
+            <span class="material-symbols-outlined absolute -right-2 -bottom-2 text-white/10 text-6xl">account_balance_wallet</span>
+        </div>
+
+        <div class="min-w-[200px] bg-white p-6 rounded-[32px] shadow-sm border border-gray-100 shrink-0">
+            <span class="text-[10px] uppercase tracking-widest text-gray-400 font-black">Taux d'occupation</span>
+            <div class="mt-4 flex items-baseline gap-1">
+                <span id="fin-occupancy" class="text-3xl font-headline font-black text-primary-container">0</span>
+                <span class="text-lg font-bold text-primary-container">%</span>
+            </div>
+            <div id="occupancy-status" class="mt-2 text-[10px] font-bold">
+                </div>
+        </div>
+
+        <div class="min-w-[200px] bg-white p-6 rounded-[32px] shadow-sm border border-gray-100 shrink-0">
+            <span class="text-[10px] uppercase tracking-widest text-gray-400 font-black">Maintenance (Mois)</span>
+            <div id="fin-maintenance" class="mt-4 text-2xl font-headline font-black text-red-500">0 F</div>
+            <p class="text-[9px] text-gray-400 font-bold uppercase mt-1">Dépenses cumulées</p>
+        </div>
+    </div>
+
+    <div class="bg-gray-50/50 p-6 rounded-[40px] border border-gray-100 space-y-6">
+        <div class="flex justify-between items-center">
+            <h3 class="text-sm font-black text-primary-container uppercase tracking-tighter">Répartition des Dépenses</h3>
+            <span class="text-[9px] font-black text-secondary bg-secondary/10 px-3 py-1 rounded-full uppercase">Global</span>
+        </div>
+        
+        <div id="expense-chart-circle" class="relative w-48 h-48 mx-auto flex items-center justify-center rounded-full border-[12px] border-gray-100">
+            <div class="text-center z-10">
+                <span id="fin-total-expense" class="text-xl font-black text-primary-container">0 F</span>
+                <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest">Total Dépensé</p>
+            </div>
+        </div>
+
+        <div id="expense-legends" class="grid grid-cols-2 gap-3 pt-4">
+            </div>
+    </div>
+
+    <div class="space-y-4">
+        <div class="flex gap-2 px-2 mb-4">
+    <select id="filter-month" onchange="applyFinanceFilters()" class="flex-1 bg-white border border-gray-100 rounded-xl p-3 text-[10px] font-black uppercase text-primary-container outline-none">
+        <option value="">Tous les mois</option>
+        <option value="Janvier">Janvier</option>
+        <option value="Février">Février</option>
+        <option value="Mars">Mars</option>
+        <option value="Avril">Avril</option>
+        <option value="Mai">Mai</option>
+        <option value="Juin">Juin</option>
+        <option value="Juillet">Juillet</option>
+        <option value="Août">Août</option>
+        <option value="Septembre">Septembre</option>
+        <option value="Octobre">Octobre</option>
+        <option value="Novembre">Novembre</option>
+        <option value="Décembre">Décembre</option>
+    </select>
+
+    <select id="filter-year" onchange="applyFinanceFilters()" class="flex-1 bg-white border border-gray-100 rounded-xl p-3 text-[10px] font-black uppercase text-primary-container outline-none">
+        <option value="">Toutes les années</option>
+        <option value="2025">2025</option>
+        <option value="2026">2026</option>
+    </select>
+</div>
+        <div class="flex gap-2 overflow-x-auto no-scrollbar">
+            <button onclick="filterFinance('tout')" id="btn-filter-all" class="filter-btn active px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-wider transition-all">Tout</button>
+            <button onclick="filterFinance('revenus')" id="btn-filter-rev" class="filter-btn px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-wider border border-gray-100 transition-all">Revenus</button>
+            <button onclick="filterFinance('depenses')" id="btn-filter-exp" class="filter-btn px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-wider border border-gray-100 transition-all">Dépenses</button>
+        </div>
+
+        <div class="flex justify-between items-center px-2">
+            <h2 id="finance-list-title" class="text-lg font-headline font-black text-primary-container">Transactions Récentes</h2>
+            <button onclick="showAllTransactions()" class="text-secondary font-black text-[10px] uppercase">Tout voir</button>
+        </div>
+
+        <div id="finance-history-list" class="space-y-4">
+            </div>
+    </div>
+</section>
+
+
+
+</main>
+<div id="modal-manage-property" class="hidden fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-md rounded-[2.5rem] p-8 shadow-2xl animate__animated modal-enter relative">
+        
+        <button onclick="toggleModal('modal-manage-property')" class="absolute top-6 right-6 w-10 h-10 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-400 active:scale-90 transition-all">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+
+        <h3 id="manage-title" class="text-2xl font-black text-primary-container capitalize pr-10">Détails</h3>
+        
+        <div id="manage-info" class="my-6 space-y-4">
+            </div>
+
+        <div class="grid grid-cols-1 gap-3">
+            <button onclick="editProperty()" class="bg-gray-50 h-14 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-lg">edit</span> Modifier
+            </button>
+            <button onclick="deleteProperty()" class="bg-red-50 text-red-600 h-14 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-lg">delete</span> Supprimer
+            </button>
+        </div>
+    </div>
+</div>
+
+      <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md z-50 flex justify-around items-center px-4 pb-6 pt-4 bg-white/90 backdrop-blur-xl border-t border-gray-100 shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
+    
+    <a href="javascript:showView('home')" id="nav-home" class="flex flex-col items-center text-primary-container nav-link transition-all active:scale-90">
+        <span class="material-symbols-outlined text-[24px]">home</span>
+        <span class="text-[9px] font-black uppercase mt-1">Accueil</span>
+    </a>
+    
+    <a href="javascript:showView('properties')" id="nav-properties" class="flex flex-col items-center text-gray-400 nav-link transition-all active:scale-90">
+        <span class="material-symbols-outlined text-[24px]">domain</span>
+        <span class="text-[9px] font-black uppercase mt-1">Biens</span>
+    </a>
+    
+    <a href="javascript:showView('finance')" id="nav-finance" class="flex flex-col items-center text-gray-400 nav-link transition-all active:scale-90">
+        <span class="material-symbols-outlined text-[24px]">analytics</span>
+        <span class="text-[9px] font-black uppercase mt-1">Finance</span>
+    </a>
+    
+    <a href="javascript:showView('settings')" id="nav-settings" class="flex flex-col items-center text-gray-400 nav-link transition-all active:scale-90">
+        <span class="material-symbols-outlined text-[24px]">settings</span>
+        <span class="text-[9px] font-black uppercase mt-1">Réglages</span>
+    </a>
+</nav>
+
+        <div id="modal-add" class="hidden absolute inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-end">
+            <div class="bg-white w-full rounded-t-[32px] p-8 space-y-6 modal-enter shadow-2xl overflow-y-auto max-h-[90%]">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xl font-headline font-extrabold text-primary-container">Nouveau Bien</h3>
+                    <button onclick="toggleModal('modal-add')" class="w-8 h-8 flex items-center justify-center bg-gray-100 rounded-full text-gray-500">×</button>
+                </div>
+
+                <form id="form-add-property" class="space-y-4">
+                    <div class="relative w-full h-40 bg-gray-100 rounded-2xl flex flex-col items-center justify-center border-2 border-dashed border-gray-200 overflow-hidden group">
+                        <img id="preview-img" class="absolute inset-0 w-full h-full object-cover hidden">
+                        <span class="material-symbols-outlined text-4xl text-gray-300">add_a_photo</span>
+                        <p class="text-[10px] text-gray-400 mt-2 uppercase font-bold">Ajouter la photo du bien</p>
+                        <input type="file" id="prop-image" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-gray-400 uppercase">Nom du bien</label>
+                            <input type="text" id="prop-name" placeholder="Ex: Villa Horizon" class="w-full bg-gray-50 border-none rounded-xl text-sm focus:ring-secondary" required>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-gray-400 uppercase">Commune / Ville</label>
+                            <input type="text" id="prop-location" placeholder="Ex: Gombe" class="w-full bg-gray-50 border-none rounded-xl text-sm focus:ring-secondary" required>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-gray-400 uppercase">Loyer Mensuel</label>
+                            <input type="number" id="prop-price" placeholder="Prix en FCFA" class="w-full bg-gray-50 border-none rounded-xl text-sm focus:ring-secondary" required>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-gray-400 uppercase">Status</label>
+                            <select id="prop-status" class="w-full bg-gray-50 border-none rounded-xl text-sm focus:ring-secondary">
+                                <option value="occupé">Occupé</option>
+                                <option value="disponible">Disponible</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full luxury-gradient text-white py-4 rounded-2xl font-bold shadow-lg shadow-blue-900/20 active:scale-95 transition-transform">
+                        Enregistrer le bien
+                    </button>
+                </form>
+            </div>
+        </div>
+
+       <div id="modal-view-all" class="hidden fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-md bottom-[80px] z-[45] bg-gray-50 flex flex-col modal-enter shadow-2xl">
+    
+    <header class="px-6 py-6 flex justify-between items-center bg-white border-b border-gray-100 shadow-sm">
+        <button onclick="toggleModal('modal-view-all')" class="w-10 h-10 flex items-center justify-center bg-gray-50 rounded-full active:scale-90 transition-transform">
+            <span class="material-symbols-outlined text-primary-container">arrow_back</span>
+        </button>
+        <h3 class="text-lg font-black text-primary-container">Mon Patrimoine</h3>
+        <div class="w-10"></div> 
+    </header>
+    
+    <div id="full-property-list" class="flex-1 overflow-y-auto p-6 space-y-4 no-scrollbar pb-10">
+        </div>
+
+</div>
+
+<div id="modal-edit" class="hidden fixed inset-0 z-[70] bg-black/60 backdrop-blur-sm flex items-end justify-center">
+    <div class="bg-white w-full max-w-[430px] mx-auto rounded-t-[32px] p-8 space-y-6 modal-enter shadow-2xl">
+        <div class="flex justify-between items-center">
+            <h3 class="text-xl font-headline font-extrabold text-primary-container">Gérer le bien</h3>
+            <button onclick="toggleModal('modal-edit')" class="text-gray-400 p-2 text-2xl leading-none">&times;</button>
+        </div>
+        <form id="form-edit-property" class="space-y-4">
+            <input type="hidden" id="edit-id"> 
+            <div class="space-y-1">
+                <label class="text-[10px] font-bold uppercase text-gray-400 ml-1">Nouveau Loyer (FCFA)</label>
+                <input type="number" id="edit-price" class="w-full bg-gray-50 border-none rounded-xl text-sm focus:ring-secondary">
+            </div>
+            <div class="space-y-1">
+                <label class="text-[10px] font-bold uppercase text-gray-400 ml-1">Changer Statut</label>
+                <select id="edit-status" class="w-full bg-gray-50 border-none rounded-xl text-sm focus:ring-secondary">
+                    <option value="disponible">Disponible</option>
+                    <option value="occupé">Occupé</option>
+                </select>
+            </div>
+            <div class="flex gap-3 pt-2">
+                <button type="button" onclick="deleteProperty()" class="flex-1 bg-red-50 text-red-600 py-4 rounded-2xl font-bold text-sm hover:bg-red-100 transition-colors">Supprimer</button>
+                <button type="submit" class="flex-[2] luxury-gradient text-white py-4 rounded-2xl font-bold text-sm shadow-lg active:scale-95 transition-transform">Mettre à jour</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div id="modal-logout-confirm" class="hidden fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-6">
+    <div class="modal-enter bg-white w-full max-w-[350px] rounded-[32px] p-8 shadow-2xl border border-gray-100 text-center space-y-6">
+        
+        <div class="w-20 h-20 rounded-full bg-red-50 flex items-center justify-center mx-auto border-4 border-red-100/50 shadow-inner">
+            <span class="material-symbols-outlined text-red-500 text-5xl">logout</span>
+        </div>
+
+        <div class="space-y-2">
+            <h3 class="text-xl font-headline font-extrabold text-primary-container">Déconnexion</h3>
+            <p class="text-sm text-gray-500">Êtes-vous sûr de vouloir quitter votre session Élite ?</p>
+        </div>
+
+        <div class="flex flex-col gap-3 pt-2">
+            <button onclick="confirmLogoutAction()" class="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-2xl font-black uppercase text-xs tracking-widest shadow-lg shadow-red-500/20 active:scale-95 transition-all">
+                Oui, se déconnecter
+            </button>
+            
+            <button onclick="toggleModal('modal-logout-confirm')" class="w-full bg-gray-50 hover:bg-gray-100 text-primary-container py-4 rounded-2xl font-bold text-sm border border-gray-100 active:scale-95 transition-all">
+                Annuler
+            </button>
+        </div>
+    </div>
+</div>
+ <div id="modal-add-tenant" class="hidden fixed inset-0 z-[80] bg-black/60 backdrop-blur-sm flex items-end justify-center">
+    <div class="bg-white w-full max-w-[430px] mx-auto rounded-t-[32px] p-8 space-y-6 modal-enter shadow-2xl">
+        <div class="flex justify-between items-center">
+            <h3 class="text-xl font-headline font-extrabold text-primary-container">Installation Locataire</h3>
+            <button onclick="toggleModal('modal-add-tenant')" class="text-gray-400 p-2 text-2xl">&times;</button>
+        </div>
+
+        <form id="form-add-tenant" class="space-y-4">
+            <div class="space-y-1">
+                <label class="text-[10px] font-bold uppercase text-gray-400 ml-1">Choisir le bien disponible</label>
+                <select id="tenant-property-id" required class="w-full bg-gray-50 border-none rounded-xl text-sm focus:ring-secondary">
+                    <option value="">Chargement des biens...</option>
+                </select>
+            </div>
+
+            <div class="space-y-1">
+                <label class="text-[10px] font-bold uppercase text-gray-400 ml-1">Nom complet du locataire</label>
+                <input type="text" id="tenant-name" required placeholder="Ex: Jean Mukoko" class="w-full bg-gray-50 border-none rounded-xl text-sm">
+            </div>
+
+            <div class="space-y-1">
+                <label class="text-[10px] font-bold uppercase text-gray-400 ml-1">Email du locataire</label>
+                <input type="email" id="tenant-email" required placeholder="locataire@exemple.com" class="w-full bg-gray-50 border-none rounded-xl text-sm">
+                <p class="text-[9px] text-gray-400 ml-1">Sert uniquement à lui envoyer son invitation — vous ne créez pas son mot de passe.</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div class="space-y-1">
+                    <label class="text-[10px] font-bold uppercase text-gray-400 ml-1">Caution (FCFA)</label>
+                    <input type="number" id="tenant-caution" required placeholder="Ex: 30000" class="w-full bg-gray-50 border-none rounded-xl text-sm">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[10px] font-bold uppercase text-gray-400 ml-1">Téléphone</label>
+                    <input type="tel" id="tenant-phone" placeholder="+242..." class="w-full bg-gray-50 border-none rounded-xl text-sm">
+                </div>
+            </div>
+
+            <div class="space-y-1">
+                <label class="text-[10px] font-bold uppercase text-gray-400 ml-1">Date d'entrée</label>
+                <input type="date" id="tenant-date" required class="w-full bg-gray-50 border-none rounded-xl text-sm">
+            </div>
+
+            <button type="submit" class="w-full luxury-gradient text-white py-4 rounded-2xl font-black uppercase text-xs tracking-widest shadow-lg active:scale-95 transition-all">
+                Confirmer l'installation
+            </button>
+        </form>
+    </div>
+</div>
+<div id="modal-tenant-invitation" class="hidden fixed inset-0 z-[110] bg-black/60 backdrop-blur-sm flex items-end justify-center">
+    <div class="bg-white w-full max-w-[430px] mx-auto rounded-t-[32px] p-8 space-y-5 modal-enter shadow-2xl">
+        <div class="flex justify-between items-center">
+            <h3 class="text-xl font-headline font-extrabold text-primary-container">Locataire installé 🎉</h3>
+            <button onclick="toggleModal('modal-tenant-invitation')" class="text-gray-400 p-2 text-2xl">&times;</button>
+        </div>
+        <p class="text-sm text-gray-500">Partagez ce lien à votre locataire pour qu'il crée son propre accès. Ce lien expire dans 7 jours.</p>
+
+        <div class="bg-gray-50 rounded-2xl p-4 flex items-center justify-between gap-3">
+            <span id="invitation-link-display" class="text-xs text-primary-container font-medium break-all"></span>
+            <button onclick="copyInvitationLink()" class="shrink-0 w-9 h-9 bg-white rounded-xl shadow-sm flex items-center justify-center">
+                <span class="material-symbols-outlined text-lg text-primary-container">content_copy</span>
+            </button>
+        </div>
+
+        <div class="flex flex-col gap-3 pt-2">
+            <button id="btn-invite-whatsapp" class="w-full bg-green-500 text-white py-4 rounded-2xl font-black uppercase text-xs tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-all">
+                <span class="material-symbols-outlined text-lg">chat</span> Envoyer via WhatsApp
+            </button>
+            <button onclick="toggleModal('modal-tenant-invitation')" class="w-full bg-gray-50 text-primary-container py-4 rounded-2xl font-bold text-sm border border-gray-100 active:scale-95 transition-all">
+                Terminer
+            </button>
+        </div>
+    </div>
+</div>
+<section id="view-properties" class="hidden min-h-screen bg-gray-50 pb-32">
+    <div class="p-6 bg-white shadow-sm mb-6">
+        <h2 class="text-2xl font-headline font-extrabold text-primary-container">Mes Biens</h2>
+        <p class="text-xs text-gray-400 uppercase font-bold tracking-widest">Enregistrer un paiement</p>
+    </div>
+
+    <div id="properties-payment-list" class="px-4 space-y-4"></div>
+</section>
+
+<div id="modal-pay-rent" class="hidden fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-end justify-center">
+    <div class="bg-white w-full max-w-[430px] rounded-t-[32px] p-8 space-y-6 shadow-2xl modal-enter">
+        
+        <div class="flex justify-between items-center">
+            <h3 id="pay-property-name" class="text-xl font-black text-primary-container">Encaisser Loyer</h3>
+            <button onclick="toggleModal('modal-pay-rent')" class="w-8 h-8 flex items-center justify-center bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200 transition-colors">
+                <span class="material-symbols-outlined text-sm">close</span>
+            </button>
+        </div>
+        
+        <form id="form-add-payment" class="space-y-4">
+            <input type="hidden" id="pay-property-id">
+            
+            <div class="space-y-1">
+                <label class="text-[10px] font-bold uppercase text-gray-400 ml-1">Mois payé</label>
+                <select id="pay-month" required class="w-full bg-gray-50 border-none rounded-xl text-sm focus:ring-secondary">
+                    <option value="Janvier">Janvier</option>
+                    <option value="Février">Février</option>
+                    <option value="Mars">Mars</option>
+                    <option value="Avril">Avril</option>
+                    <option value="Mai">Mai</option>
+                    <option value="Juin">Juin</option>
+                    <option value="Juillet">Juillet</option>
+                    <option value="Août">Août</option>
+                    <option value="Septembre">Septembre</option>
+                    <option value="Octobre">Octobre</option>
+                    <option value="Novembre">Novembre</option>
+                    <option value="Décembre">Décembre</option>
+                </select>
+            </div>
+
+            <div class="space-y-1">
+                <label class="text-[10px] font-bold uppercase text-gray-400 ml-1">Montant reçu (FCFA)</label>
+                <input type="number" id="pay-amount" required class="w-full bg-gray-50 border-none rounded-xl text-sm focus:ring-secondary">
+            </div>
+
+            <div class="flex flex-col gap-3 pt-2">
+                <button type="submit" class="w-full luxury-gradient text-white py-4 rounded-2xl font-black uppercase text-xs tracking-widest shadow-lg active:scale-95 transition-all">
+                    Valider le paiement
+                </button>
+                
+                <button type="button" onclick="toggleModal('modal-pay-rent')" class="w-full bg-gray-50 text-gray-500 py-4 rounded-2xl font-bold text-xs uppercase tracking-widest active:scale-95 transition-all">
+                    Annuler
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<div id="modal-add-expense" class="hidden fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-end justify-center">
+    <div class="bg-white w-full max-w-[430px] h-[92%] rounded-t-[40px] shadow-2xl flex flex-col overflow-hidden modal-enter">
+        
+        <div class="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mt-4 mb-2 flex-shrink-0"></div>
+
+        <header class="px-8 pb-4 flex justify-between items-center border-b border-gray-50 flex-shrink-0">
+            <div>
+                <h3 class="text-xl font-headline font-extrabold text-primary-container">Maintenance Elite</h3>
+                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Enregistrer une dépense</p>
+            </div>
+            <button onclick="toggleModal('modal-add-expense')" class="w-10 h-10 flex items-center justify-center bg-gray-50 rounded-full">
+                <span class="material-symbols-outlined text-gray-400">close</span>
+            </button>
+        </header>
+
+        <form id="form-add-expense" class="flex flex-col flex-1 overflow-hidden">
+            
+            <div class="flex-1 overflow-y-auto px-8 py-6 space-y-6 no-scrollbar">
+                
+                <div class="space-y-3">
+                    <div class="flex items-center gap-2 text-primary-container">
+                        <span class="material-symbols-outlined text-sm">domain</span>
+                        <label class="text-[11px] font-black uppercase tracking-wider">Bien Immobilier</label>
+                    </div>
+                    <select id="expense-property-id" required class="w-full bg-gray-50 border-none rounded-2xl py-4 px-5 text-sm focus:ring-2 focus:ring-secondary/20 transition-all">
+                        <option value="">Chargement des biens...</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold uppercase text-gray-400 ml-1">Type</label>
+                        <select id="expense-type" class="w-full bg-gray-50 border-none rounded-xl text-sm">
+                            <option>Plomberie</option>
+                            <option>Électricité</option>
+                            <option>Peinture</option>
+                            <option>Climatisation</option>
+                            <option>Maçonnerie</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold uppercase text-gray-400 ml-1">Urgence</label>
+                        <select id="expense-priority" class="w-full bg-gray-50 border-none rounded-xl text-sm font-bold text-red-600">
+                            <option value="faible">Faible</option>
+                            <option value="moyenne">Moyenne</option>
+                            <option value="urgente">🔥 Urgente</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-[10px] font-bold uppercase text-gray-400 ml-1">Description précise</label>
+                    <textarea id="expense-desc" rows="2" placeholder="Ex: Remplacement du robinet cuisine..." class="w-full bg-gray-50 border-none rounded-2xl text-sm"></textarea>
+                </div>
+
+                <div class="bg-primary-container/5 p-5 rounded-[24px] space-y-4 border border-primary-container/10">
+                    <p class="text-[10px] font-black uppercase text-primary-container opacity-60">Détails financiers (FCFA)</p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-gray-500">Matériaux</label>
+                            <input type="number" id="expense-mat" value="0" class="w-full bg-white border-none rounded-xl text-sm font-bold shadow-sm">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-gray-500">Main d'œuvre</label>
+                            <input type="number" id="expense-labor" value="0" class="w-full bg-white border-none rounded-xl text-sm font-bold text-secondary shadow-sm">
+                        </div>
+                    </div>
+                    <div class="pt-2 border-t border-white flex justify-between items-center">
+                        <span class="text-xs font-bold text-primary-container uppercase tracking-tight">Total estimé</span>
+                        <span id="expense-total-display" class="text-lg font-headline font-black text-primary-container">0 FCFA</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 pb-4">
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold uppercase text-gray-400 ml-1">Artisan</label>
+                        <input type="text" id="expense-artisan" placeholder="Nom" class="w-full bg-gray-50 border-none rounded-xl text-sm">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold uppercase text-gray-400 ml-1">Paiement</label>
+                        <select id="expense-method" class="w-full bg-gray-50 border-none rounded-xl text-sm">
+                            <option>Mobile Money</option>
+                            <option>Espèces</option>
+                            <option>Virement</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="px-8 py-6 border-t border-gray-50 bg-white/80 backdrop-blur-md">
+                <button type="submit" class="w-full luxury-gradient text-white py-5 rounded-2xl font-black uppercase text-xs tracking-[2px] shadow-xl shadow-blue-900/20 active:scale-95 transition-all">
+                    Enregistrer la dépense
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<section id="view-support" class="hidden fixed top-0 bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md z-[60] bg-gray-50 overflow-y-auto pb-32 shadow-2xl">
+    
+    <div class="sticky top-0 p-6 bg-white shadow-sm mb-6 flex items-center gap-4 z-10">
+        <button onclick="showView('home')" class="w-10 h-10 flex items-center justify-center bg-gray-50 rounded-full active:scale-90 transition-all">
+            <span class="material-symbols-outlined text-primary-container">arrow_back</span>
+        </button>
+        <div>
+            <h2 class="text-xl font-black text-primary-container">Aide & Support</h2>
+            <p class="text-[10px] text-gray-400 uppercase font-black tracking-widest">Balleya à votre écoute</p>
+        </div>
+    </div>
+
+    <div class="px-6 space-y-6">
+        <div class="space-y-3">
+            <h3 class="text-xs font-black uppercase text-gray-400 ml-2 tracking-widest">Questions fréquentes</h3>
+            
+            <div class="bg-white rounded-[2rem] overflow-hidden border border-gray-100">
+                <details class="group border-b border-gray-50">
+                    <summary class="list-none p-5 flex justify-between items-center cursor-pointer">
+                        <span class="text-xs font-bold text-primary-container">Comment ajouter un locataire ?</span>
+                        <span class="material-symbols-outlined text-gray-300 group-open:rotate-180 transition-transform">expand_more</span>
+                    </summary>
+                    <div class="px-5 pb-5 text-[11px] text-gray-500 leading-relaxed">
+                        Allez dans l'onglet "Accueil", cliquez sur le bouton "Locataire". Remplissez les informations et liez-le à l'un de vos biens disponibles.
+                    </div>
+                </details>
+                <details class="group">
+                    <summary class="list-none p-5 flex justify-between items-center cursor-pointer">
+                        <span class="text-xs font-bold text-primary-container">Mes données sont-elles sécurisées ?</span>
+                        <span class="material-symbols-outlined text-gray-300 group-open:rotate-180 transition-transform">expand_more</span>
+                    </summary>
+                    <div class="px-5 pb-5 text-[11px] text-gray-500 leading-relaxed">
+                        Oui, toutes vos données sont cryptées et stockées via Google Cloud. Seul vous avez accès à vos revenus et détails de patrimoine.
+                    </div>
+                </details>
+            </div>
+        </div>
+
+        <div class="bg-primary-container p-8 rounded-[2.5rem] text-white relative overflow-hidden shadow-xl shadow-blue-100">
+            <h3 class="font-black text-lg mb-1 relative z-10">Ton avis compte !</h3>
+            <p class="text-[10px] opacity-70 mb-6 relative z-10 leading-snug">Notez votre expérience sur Balleya :</p>
+            
+            <div class="flex justify-center gap-2 mb-6 relative z-10">
+                <button onclick="setRating(1)" class="star-btn text-3xl text-white/20 transition-all" data-val="1">★</button>
+                <button onclick="setRating(2)" class="star-btn text-3xl text-white/20 transition-all" data-val="2">★</button>
+                <button onclick="setRating(3)" class="star-btn text-3xl text-white/20 transition-all" data-val="3">★</button>
+                <button onclick="setRating(4)" class="star-btn text-3xl text-white/20 transition-all" data-val="4">★</button>
+                <button onclick="setRating(5)" class="star-btn text-3xl text-white/20 transition-all" data-val="5">★</button>
+            </div>
+
+            <textarea id="feedback-text" rows="3" 
+                class="w-full bg-white/10 border border-white/20 rounded-2xl p-4 text-[11px] placeholder:text-white/30 focus:outline-none focus:bg-white/20 mb-4 transition-all" 
+                placeholder="Un commentaire ou une suggestion ?"></textarea>
+            
+            <button id="btn-send-feedback" onclick="sendFeedback()" class="w-full bg-secondary-fixed text-primary-container py-4 rounded-2xl font-black text-[9px] uppercase tracking-widest active:scale-95 transition-all shadow-lg">
+                Envoyer mon avis
+            </button>
+        </div>
+
+        <div class="bg-green-50/50 p-6 rounded-[2.5rem] border border-green-100 text-center mb-10">
+            <h3 class="font-black text-green-700 text-xs uppercase mb-2">Assistance Directe</h3>
+            <a href="https://wa.me/242065749358" class="inline-flex items-center gap-2 text-green-600 font-bold text-sm">
+                <span class="material-symbols-outlined text-lg">chat</span>
+                Parler avec un conseiller
+            </a>
+        </div>
+    </div>
+</section>
+<section id="view-profile-settings" class="hidden fixed top-0 bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md z-[60] bg-gray-50 overflow-y-auto pb-32 shadow-2xl">
+    <div class="sticky top-0 p-6 bg-white/80 backdrop-blur-md shadow-sm mb-6 flex items-center gap-4 z-10">
+        <button onclick="showView('home')" class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full active:scale-90 transition-all">
+            <span class="material-symbols-outlined text-primary-container">arrow_back</span>
+        </button>
+        <h2 class="text-xl font-black text-primary-container">Mon Profil</h2>
+    </div>
+
+    <div class="px-6 space-y-6">
+        <div class="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div id="kyc-icon-box" class="w-12 h-12 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center">
+                    <span class="material-symbols-outlined">pending_actions</span>
+                </div>
+                <div>
+                    <p class="text-[10px] font-black uppercase text-gray-400">Vérification KYC</p>
+                    <p id="kyc-status-text" class="text-xs font-bold text-primary-container">Non vérifié</p>
+                </div>
+            </div>
+            <button onclick="startKYC()" class="text-[10px] font-black uppercase text-secondary border-b-2 border-secondary pb-0.5">Compléter</button>
+        </div>
+
+        <div class="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm space-y-4">
+            <h3 class="text-[10px] font-black uppercase text-gray-400 tracking-widest px-2">Informations Personnelles</h3>
+            <div class="space-y-3">
+                <div class="group">
+                    <label class="text-[10px] font-bold text-gray-400 px-4 uppercase">Nom complet</label>
+                    <input type="text" id="profile-name" class="w-full p-4 bg-gray-50 rounded-2xl border-none text-sm font-bold text-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all" placeholder="Votre nom">
+                </div>
+                <div class="group">
+                    <label class="text-[10px] font-bold text-gray-400 px-4 uppercase">WhatsApp (Brazzaville)</label>
+                    <input type="tel" id="profile-phone" class="w-full p-4 bg-gray-50 rounded-2xl border-none text-sm font-bold text-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all" placeholder="+242 06 ...">
+                </div>
+                <div class="group">
+                    <label class="text-[10px] font-bold text-gray-400 px-4 uppercase">Adresse</label>
+                    <input type="text" id="profile-address" class="w-full p-4 bg-gray-50 rounded-2xl border-none text-sm font-bold text-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all" placeholder="Quartier, Rue...">
+                </div>
+            </div>
+            <button onclick="saveUserProfile()" id="btn-save-profile" class="w-full bg-primary-container text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-lg active:scale-95 transition-all">
+                Enregistrer
+            </button>
+        </div>
+
+        <div id="kyc-upload-section" class="hidden bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm space-y-4">
+            <h3 class="text-[10px] font-black uppercase text-gray-400 tracking-widest px-2 tracking-widest">Pièce d'identité</h3>
+            <label for="kyc-file" class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-200 rounded-[2rem] bg-gray-50 cursor-pointer hover:bg-gray-100 transition-all">
+                <div class="flex flex-col items-center justify-center text-center">
+                    <span class="material-symbols-outlined text-primary-container/40 mb-2">add_a_photo</span>
+                    <p class="text-[9px] text-gray-400 font-bold uppercase leading-tight">Prendre une photo</p>
+                </div>
+                <input id="kyc-file" type="file" class="hidden" accept="image/*" onchange="previewKYC(event)" />
+            </label>
+            <div id="kyc-preview-container" class="hidden relative w-full h-48 rounded-[2rem] overflow-hidden">
+                <img id="kyc-preview-img" src="#" class="w-full h-full object-cover" />
+                <button onclick="resetKYC()" class="absolute top-3 right-3 w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center">
+                    <span class="material-symbols-outlined text-sm">close</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="p-4 border-2 border-dashed border-gray-200 rounded-[2.5rem] opacity-50">
+            <p class="text-center text-[10px] font-bold text-gray-400 uppercase">Compte : <span id="profile-email">---</span></p>
+        </div>
+    </div>
+</section>
+<section id="view-upgrade" class="hidden fixed top-0 bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md z-[60] bg-gray-50 overflow-y-auto pb-32 shadow-2xl">
+    <div class="sticky top-0 p-6 bg-white/80 backdrop-blur-md shadow-sm mb-6 flex items-center gap-4 z-10">
+        <button onclick="showView('home')" class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full active:scale-90 transition-all">
+            <span class="material-symbols-outlined text-primary-container">arrow_back</span>
+        </button>
+        <h2 class="text-xl font-black text-primary-container">Passer au niveau Pro</h2>
+    </div>
+
+    <div class="px-6 space-y-6">
+        <div class="relative overflow-hidden luxury-gradient p-8 rounded-[3rem] text-white shadow-2xl shadow-blue-900/20">
+            <div class="relative z-10">
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="material-symbols-outlined text-yellow-400">verified_user</span>
+                    <span class="text-[10px] font-black uppercase tracking-[3px]">ImmoTrust</span>
+                </div>
+                <h3 class="text-3xl font-black mb-2">Libérez tout votre potentiel</h3>
+                <p class="text-xs opacity-80 leading-relaxed mb-6">Gérez votre patrimoine sans limites et avec des outils d'expert.</p>
+                
+                <div class="flex items-baseline gap-1 mb-2">
+                    <span class="text-4xl font-black">2.000</span>
+                    <span class="text-sm font-bold opacity-70">FCFA / mois</span>
+                </div>
+            </div>
+            <span class="material-symbols-outlined absolute -right-4 -bottom-4 text-[150px] opacity-10 rotate-12">workspace_premium</span>
+        </div>
+
+        <div class="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm space-y-6">
+            <h4 class="text-[10px] font-black uppercase text-gray-400 tracking-widest px-2 text-center">Ce qui est inclus</h4>
+            
+            <div class="space-y-4">
+                <div class="flex items-start gap-4">
+                    <div class="w-6 h-6 rounded-full bg-green-50 flex items-center justify-center flex-shrink-0">
+                        <span class="material-symbols-outlined text-green-500 text-sm">check</span>
+                    </div>
+                    <p class="text-xs font-bold text-primary-container">Gestion de biens illimitée <span class="text-[9px] text-gray-400 block font-normal">Contre 2 max en gratuit</span></p>
+                </div>
+                
+                <div class="flex items-start gap-4">
+                    <div class="w-6 h-6 rounded-full bg-green-50 flex items-center justify-center flex-shrink-0">
+                        <span class="material-symbols-outlined text-green-500 text-sm">check</span>
+                    </div>
+                    <p class="text-xs font-bold text-primary-container">Génération de Quittances PDF <span class="text-[9px] text-gray-400 block font-normal">Prêtes à être envoyées par WhatsApp</span></p>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div class="w-6 h-6 rounded-full bg-green-50 flex items-center justify-center flex-shrink-0">
+                        <span class="material-symbols-outlined text-green-500 text-sm">check</span>
+                    </div>
+                    <p class="text-xs font-bold text-primary-container">Statistiques Avancées <span class="text-[9px] text-gray-400 block font-normal">Analyse détaillée de vos profits annuels</span></p>
+                </div>
+            </div>
+
+            <button onclick="handleSubscription()" class="w-full bg-primary-container text-white py-5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl active:scale-95 transition-all">
+                Activer maintenant
+            </button>
+        </div>
+    </div>
+</section>
+<section id="view-docs" class="hidden fixed top-0 bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md z-[60] bg-white overflow-y-auto pb-32 shadow-2xl">
+    <div class="sticky top-0 p-6 bg-white/90 backdrop-blur-md border-b border-gray-50 mb-6 flex items-center gap-4 z-10">
+        <button onclick="showView('home')" class="w-10 h-10 flex items-center justify-center bg-gray-50 rounded-full active:scale-90">
+            <span class="material-symbols-outlined text-primary-container">arrow_back</span>
+        </button>
+        <h2 class="text-xl font-black text-primary-container">Documents Légaux</h2>
+    </div>
+
+    <div class="px-8 space-y-8 pb-10">
+        <article class="space-y-4">
+            <h3 class="text-xs font-black uppercase text-secondary tracking-widest">1. Conditions d'Utilisation</h3>
+            <div class="text-[11px] text-gray-500 leading-relaxed space-y-3">
+                <p>L'application <strong>ImmoTrust</strong> est une plateforme de gestion immobilière. En utilisant nos services, vous acceptez que les données de vos biens et locataires soient stockées de manière sécurisée.</p>
+                <p>L'utilisateur est responsable de la véracité des informations saisies (montants des loyers, noms des locataires).</p>
+            </div>
+        </article>
+
+        <article class="space-y-4 p-6 bg-gray-50 rounded-[2rem]">
+            <h3 class="text-xs font-black uppercase text-primary-container tracking-widest">2. Confidentialité</h3>
+            <div class="text-[11px] text-gray-500 leading-relaxed space-y-3">
+                <p>Vos données financières sont strictement privées. ImmoTrust utilise le cryptage Firebase pour garantir qu'aucun tiers n'ait accès à vos revenus locatifs.</p>
+                <p>Les photos envoyées via le module KYC sont conservées uniquement à des fins de vérification de compte.</p>
+            </div>
+        </article>
+
+        <article class="space-y-4">
+            <h3 class="text-xs font-black uppercase text-secondary tracking-widest">3. Abonnements & Paiements</h3>
+            <div class="text-[11px] text-gray-500 leading-relaxed">
+                <p>Le plan gratuit est limité à 2 biens. Le passage au plan Pro est facturé 2.000 FCFA/mois. Les paiements effectués ne sont pas remboursables pour le mois entamé.</p>
+            </div>
+        </article>
+
+        <div class="pt-6 text-center border-t border-gray-100">
+            <p class="text-[9px] font-bold text-gray-300 uppercase tracking-[2px]">ImmoTrust v1.0 — Brazzaville, Congo</p>
+        </div>
+    </div>
+</section>
+    </div>
+    
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getDatabase, ref, onValue, push, set, get, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { createTenantWithInvitation } from "./js/services/tenant-service.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyARvYr3Q9J58X9eyY8lo7CYbdGuJo_A6iU",
+            authDomain: "immotrust-ed194.firebaseapp.com",
+            databaseURL: "https://immotrust-ed194-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "immotrust-ed194",
+            storageBucket: "immotrust-ed194.firebasestorage.app",
+            messagingSenderId: "6876164261",
+            appId: "1:6876164261:web:030cc1f107629d82675d4c"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        let currentUser = null;
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                loadUserData(user.uid);
+            } else { window.location.href = 'auth.html'; }
+        });
+
+        // Toggle Modal Function
+        window.toggleModal = (id) => {
+    const m = document.getElementById(id);
+    if (!m) {
+        console.error("Erreur : Le modal avec l'ID '" + id + "' est introuvable dans le HTML.");
+        return;
+    }
+    
+    const content = m.querySelector('.modal-enter');
+    // Si l'élément n'a pas la classe .modal-enter, on agit directement sur le modal
+    const target = content || m; 
+
+    if (m.classList.contains('hidden')) {
+        m.classList.remove('hidden');
+        setTimeout(() => target.classList.add('modal-active'), 10);
+    } else {
+        target.classList.remove('modal-active');
+        setTimeout(() => m.classList.add('hidden'), 300);
+    }
+};
+        // Preview Image
+        document.getElementById('prop-image').addEventListener('change', function(e) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = document.getElementById('preview-img');
+                img.src = event.target.result;
+                img.classList.remove('hidden');
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        });
+
+        // Submit Form
+        document.getElementById('form-add-property').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            btn.innerText = "Enregistrement...";
+            
+            const imageFile = document.getElementById('prop-image').files[0];
+            let base64Image = "";
+
+            if(imageFile) {
+                const reader = new FileReader();
+                reader.readAsDataURL(imageFile);
+                reader.onload = () => {
+                    saveProperty(reader.result);
+                };
+            } else { saveProperty(""); }
+        });
+
+        function saveProperty(imgData) {
+            const propertyRef = ref(db, `users/${currentUser.uid}/properties`);
+            const newProperty = push(propertyRef);
+            set(newProperty, {
+                nom: document.getElementById('prop-name').value,
+                location: document.getElementById('prop-location').value,
+                loyer: document.getElementById('prop-price').value,
+                status: document.getElementById('prop-status').value,
+                photo: imgData,
+                timestamp: Date.now()
+            }).then(() => {
+                toggleModal('modal-add');
+                document.getElementById('form-add-property').reset();
+                document.getElementById('preview-img').classList.add('hidden');
+            });
+        }
+
+  function loadUserData(uid) {
+    // 1. Nom d'utilisateur
+    onValue(ref(db, `users/${uid}/username`), (s) => {
+        const greeting = document.getElementById('user-greeting');
+        if(s.exists() && greeting) greeting.innerText = s.val();
+    });
+
+    // 2. Gestion des propriétés (Liste et Paywall uniquement)
+    onValue(ref(db, `users/${uid}/properties`), (snapshot) => {
+        const list = document.getElementById('property-list');
+        const countDisplay = document.getElementById('property-count');
+        const usageBar = document.getElementById('usage-bar');
+        
+        if (list) list.innerHTML = "";
+
+        if (snapshot.exists()) {
+            const props = [];
+            snapshot.forEach((child) => {
+                props.push({ id: child.key, ...child.val() });
+            });
+
+            // Paywall
+            const count = props.length;
+            const limit = 2;
+            window.canAddProperty = count < limit;
+            if (countDisplay) countDisplay.innerText = `${count} / ${limit}`;
+            if (usageBar) usageBar.style.width = Math.min((count / limit) * 100, 100) + '%';
+
+            // Affichage dernier bien
+            props.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+            if (list && props[0]) list.innerHTML = renderTemplate(props[0], false);
+        }
+    });
+
+    // 3. LANCER LE CALCUL FINANCIER RÉEL
+    updateFinanceStats();
+}
+// Fonction utilitaire pour éviter de répéter le code HTML
+function renderTemplate(prop, isManageable) {
+    if (!prop) return "";
+    return `
+        <div class="bg-white rounded-[24px] overflow-hidden shadow-sm border border-gray-50 mb-4">
+            <div class="relative h-44 bg-gray-200">
+                <img src="${prop.photo || 'https://via.placeholder.com/400'}" class="w-full h-full object-cover">
+                <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-bold text-primary-container shadow-sm uppercase tracking-wider">${prop.location}</div>
+                ${isManageable ? 
+                    `<button onclick="openEditModal('${prop.id}', '${prop.loyer}', '${prop.status}')" class="absolute top-4 right-4 bg-primary-container text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg"><span class="material-symbols-outlined text-sm">edit</span></button>` :
+                    `<div class="absolute top-4 right-4 ${prop.status === 'occupé' ? 'bg-green-500' : 'bg-red-500'} text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase shadow-sm">${prop.status}</div>`
+                }
+            </div>
+            <div class="p-5 flex justify-between items-center">
+                <div>
+                    <h4 class="font-headline font-extrabold text-primary-container">${prop.nom}</h4>
+                    <p class="text-xs text-gray-400">Mensualité Élite</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-lg font-headline font-black text-primary-container leading-none">${new Intl.NumberFormat().format(prop.loyer)}</p>
+                    <span class="text-[9px] font-bold text-secondary uppercase">FCFA / mois</span>
+                </div>
+            </div>
+        </div>`;
+}
+// Ouvre le modal et remplit les champs avec les infos actuelles
+window.openEditModal = (id, price, status) => {
+    document.getElementById('edit-id').value = id;
+    document.getElementById('edit-price').value = price;
+    document.getElementById('edit-status').value = status;
+    toggleModal('modal-edit');
+};
+
+// Enregistre les modifications dans Firebase
+document.getElementById('form-edit-property').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const id = document.getElementById('edit-id').value;
+    const updates = {
+        loyer: document.getElementById('edit-price').value,
+        status: document.getElementById('edit-status').value
+    };
+    update(ref(db, `users/${currentUser.uid}/properties/${id}`), updates)
+        .then(() => toggleModal('modal-edit'));
+});
+
+// Supprime définitivement le bien
+window.deleteProperty = () => {
+    if(confirm("Voulez-vous vraiment supprimer ce bien de votre patrimoine ?")) {
+        const id = document.getElementById('edit-id').value;
+        remove(ref(db, `users/${currentUser.uid}/properties/${id}`))
+            .then(() => toggleModal('modal-edit'));
+    }
+};
+// Fonction de déconnexion
+// --- NOUVELLE LOGIQUE DE DÉCONNEXION "ÉLITE" ---
+
+// 1. Ouvre le modal de confirmation (appelé par le bouton du menu)
+window.handleLogout = () => {
+    // On ferme d'abord le menu de profil pour que le modal de déconnexion soit au premier plan
+    const profileMenu = document.getElementById('menu-profile');
+    if (profileMenu) profileMenu.classList.add('hidden');
+    
+    // On ouvre le modal de confirmation personnalisé
+    toggleModal('modal-logout-confirm');
+};
+
+// 2. Exécute la déconnexion réelle (appelé par le bouton "Oui" du modal)
+window.confirmLogoutAction = () => {
+    // Ferme le modal immédiatement
+    toggleModal('modal-logout-confirm');
+    
+    // Lance la déconnexion Firebase
+    auth.signOut().then(() => {
+        // Redirection vers l'accueil (ou page de login)
+        window.location.href = 'index.html'; 
+    }).catch((error) => {
+        console.error("Erreur lors de la déconnexion Élite:", error);
+        // Optionnel : afficher une alerte moderne en cas d'erreur
+    });
+};
+
+// Afficher l'email dans le menu (à ajouter dans ton onAuthStateChanged)
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        currentUser = user; // Stockage de l'utilisateur globalement
+        
+        // Affichage de l'email dans le menu de profil
+        const emailDisplay = document.getElementById('user-email-display');
+        if(emailDisplay) emailDisplay.innerText = user.email;
+        
+        // Chargement des données et de la logique de limitation
+        loadUserData(user.uid);
+    } else {
+        // Redirection si l'utilisateur n'est pas connecté
+        window.location.href = 'index.html'; 
+    }
+});
+// 1. Ouvrir le modal et lister les propriétés disponibles
+window.openAddTenantModal = () => {
+    const select = document.getElementById('tenant-property-id');
+    select.innerHTML = '<option value="">Chargement des biens...</option>';
+
+    // Utilisation de get() pour une lecture unique et rapide à l'ouverture
+    const dbRef = ref(db, `users/${currentUser.uid}/properties`);
+    
+    get(dbRef).then((snapshot) => {
+        select.innerHTML = '<option value="">Sélectionner une propriété...</option>';
+        
+        if (snapshot.exists()) {
+            let found = false;
+            snapshot.forEach((child) => {
+                const prop = child.val();
+                // Affiche si c'est disponible OU si le statut n'est pas encore défini
+                if (prop.status === "disponible" || !prop.status) {
+                    select.innerHTML += `<option value="${child.key}">${prop.nom} (${prop.location})</option>`;
+                    found = true;
+                }
+            });
+            if (!found) select.innerHTML = '<option value="">Aucun bien disponible</option>';
+        } else {
+            select.innerHTML = '<option value="">Aucun bien trouvé</option>';
+        }
+    }).catch(err => {
+        console.error("Erreur:", err);
+        select.innerHTML = '<option value="">Erreur de connexion</option>';
+    });
+
+    toggleModal('modal-add-tenant');
+};
+
+// 2. Enregistrer le locataire (compte séparé via invitation) + contrat + première obligation + caution
+document.getElementById('form-add-tenant').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const propId = document.getElementById('tenant-property-id').value;
+    if (!propId) return alert("Veuillez sélectionner un bien");
+
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const originalLabel = submitBtn.innerText;
+    submitBtn.disabled = true;
+    submitBtn.innerText = "Installation en cours...";
+
+    try {
+        const propSnap = await get(ref(db, `users/${currentUser.uid}/properties/${propId}`));
+        const propData = propSnap.exists() ? propSnap.val() : {};
+
+        const result = await createTenantWithInvitation(db, {
+            ownerId: currentUser.uid,
+            propertyId: propId,
+            propertyName: propData.nom || "",
+            name: document.getElementById('tenant-name').value,
+            phone: document.getElementById('tenant-phone').value,
+            email: document.getElementById('tenant-email').value,
+            entryDate: document.getElementById('tenant-date').value,
+            monthlyRent: propData.loyer || 0,
+            depositExpected: document.getElementById('tenant-caution').value
+        });
+
+        toggleModal('modal-add-tenant');
+        document.getElementById('form-add-tenant').reset();
+
+        // Affiche le lien d'invitation à partager au locataire
+        document.getElementById('invitation-link-display').innerText = result.invitationLink;
+        const waMessage = encodeURIComponent(
+            `Bonjour, votre logement ImmoTrust est prêt. Créez votre accès locataire ici : ${result.invitationLink}`
+        );
+        document.getElementById('btn-invite-whatsapp').onclick = () => {
+            window.open(`https://wa.me/?text=${waMessage}`, '_blank');
+        };
+        window.copyInvitationLink = () => {
+            navigator.clipboard.writeText(result.invitationLink).then(() => {
+                alert("Lien copié !");
+            });
+        };
+        toggleModal('modal-tenant-invitation');
+    } catch (err) {
+        console.error("Erreur installation locataire:", err);
+        alert("Erreur lors de l'enregistrement : " + err.message);
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerText = originalLabel;
+    }
+});
+let isShowingAll = false;
+window.showView = (viewName) => {
+    // --- NETTOYAGE DES ÉLÉMENTS SPÉCIAUX (FULL SCREEN) ---
+    // On liste les IDs de toutes les vues qui se superposent
+    const fullScreenViews = ['view-support', 'view-profile-settings', 'view-upgrade', 'view-docs'];
+    
+    fullScreenViews.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+    });
+
+    // On cache le menu profil s'il était ouvert
+    const menuProfile = document.getElementById('menu-profile');
+    if (menuProfile) menuProfile.classList.add('hidden');
+
+    // --- LOGIQUE CLASSIQUE ---
+    // 1. Cacher toutes les sections standards (home, finance, etc.)
+    document.querySelectorAll('.view-section').forEach(section => section.classList.add('hidden'));
+    
+    // 2. Afficher la vue cible
+    const targetView = document.getElementById(`view-${viewName}`);
+    if (targetView) targetView.classList.remove('hidden');
+
+    // 3. Gérer l'état actif de la barre de navigation
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('text-primary-container');
+        link.classList.add('text-gray-400');
+    });
+    
+    const activeNav = document.getElementById(`nav-${viewName}`);
+    if (activeNav) {
+        activeNav.classList.remove('text-gray-400');
+        activeNav.classList.add('text-primary-container');
+    }
+
+    // --- CHARGEMENT DES DONNÉES SPÉCIFIQUES ---
+    
+    // Si on ouvre le profil, on charge les infos Firebase
+    if (viewName === 'profile-settings') {
+        if (typeof loadUserProfile === 'function') loadUserProfile();
+    }
+
+    if (viewName === 'properties') {
+        if (currentUser) loadPropertiesForPayment();
+    }
+
+    if (viewName === 'finance' || viewName === 'analytics') {
+        isShowingAll = false; 
+        if (currentUser) loadFinanceData(currentUser.uid);
+    }
+};
+// Fonction pour charger la liste des biens dans l'onglet "Biens"
+function loadPropertiesForPayment() {
+    const container = document.getElementById('properties-payment-list');
+    
+    // 1. Vérification de sécurité
+    if (!container) return;
+    if (!currentUser) {
+        container.innerHTML = '<p class="text-center text-gray-400 text-[10px] py-10">Connexion en cours...</p>';
+        return;
+    }
+
+    const dbRef = ref(db, `users/${currentUser.uid}/properties`);
+
+    onValue(dbRef, (snapshot) => {
+        container.innerHTML = "";
+        
+        if (!snapshot.exists()) {
+            container.innerHTML = `
+                <div class="flex flex-col items-center justify-center py-20 opacity-40">
+                    <span class="material-symbols-outlined text-5xl">holiday_village</span>
+                    <p class="text-[10px] font-black uppercase mt-2">Aucun bien trouvé</p>
+                </div>`;
+            return;
+        }
+
+        snapshot.forEach((child) => {
+            const prop = child.val();
+            const id = child.key;
+            const isOccupied = prop.status === "occupé";
+            
+            // Formatage du prix (ex: 15000 -> 15 000)
+            const loyerFormate = Number(prop.loyer).toLocaleString();
+
+            // On ajoute onclick sur le div principal pour voir les détails
+container.innerHTML += `
+    <div onclick="openManageModal('${id}')" class="bg-white p-4 rounded-[2rem] shadow-sm border border-gray-100 flex justify-between items-center active:scale-[0.98] transition-all cursor-pointer">
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl ${isOccupied ? 'bg-blue-50 text-primary-container' : 'bg-gray-50 text-gray-400'} flex items-center justify-center">
+                <span class="material-symbols-outlined text-xl">${isOccupied ? 'person' : 'home_work'}</span>
+            </div>
+            <div>
+                <h4 class="font-black text-primary-container text-sm capitalize">${prop.nom}</h4>
+                <div class="flex items-center gap-2">
+                    <span class="px-2 py-0.5 rounded-md text-[8px] font-black uppercase ${isOccupied ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}">
+                        ${isOccupied ? 'Occupé' : 'Libre'}
+                    </span>
+                    <p class="text-[10px] text-gray-400 font-bold">${loyerFormate} F</p>
+                </div>
+            </div>
+        </div>
+
+        ${isOccupied ? 
+            `<button onclick="event.stopPropagation(); openPaymentModal('${id}', '${prop.nom.replace(/'/g, "\\'")}', '${prop.loyer}')" 
+                class="bg-primary-container text-white h-10 px-5 rounded-2xl text-[10px] font-black uppercase shadow-md shadow-blue-100">
+                Encaisser
+            </button>` 
+            : 
+            `<span class="material-symbols-outlined text-gray-200 pr-2">lock</span>`
+        }
+    </div>
+`;
+        });
+    });
+}
+window.openManageModal = (id) => {
+    const propRef = ref(db, `users/${currentUser.uid}/properties/${id}`);
+
+    onValue(propRef, (snapshot) => {
+        const prop = snapshot.val();
+        if (!prop) return;
+
+        if (document.getElementById('manage-title')) {
+            document.getElementById('manage-title').innerText = prop.nom;
+        }
+
+        const infoContainer = document.getElementById('manage-info');
+        if (infoContainer) {
+            const isOccupied = prop.status === 'occupé';
+            const t = prop.tenant; // On récupère l'objet tenant
+
+            infoContainer.innerHTML = `
+                <div class="bg-gray-50 p-5 rounded-[2rem] border border-gray-100 space-y-4">
+                    <div class="flex justify-between items-center">
+                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">État du bien</p>
+                        <span class="px-3 py-1 rounded-full text-[9px] font-black uppercase ${isOccupied ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-600'}">
+                            ${prop.status || 'Libre'}
+                        </span>
+                    </div>
+                    
+                    ${isOccupied && t ? `
+                        <div class="space-y-3 pt-2">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-2xl bg-primary-container text-white flex items-center justify-center shadow-lg shadow-blue-100">
+                                    <span class="material-symbols-outlined">person</span>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-black text-primary-container">${t.nom || 'Inconnu'}</p>
+                                    <p class="text-[11px] text-gray-400 font-bold">${t.telephone || 'Pas de numéro'}</p>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-gray-100">
+                                <span class="text-[10px] font-black text-gray-400 uppercase">Caution versée</span>
+                                <span class="text-xs font-black text-green-600">${Number(t.caution).toLocaleString()} F</span>
+                            </div>
+                            <div class="text-[9px] text-gray-400 text-center font-bold italic">
+                                Entré le : ${t.dateEntree || 'Non précisée'}
+                            </div>
+                        </div>
+                    ` : `
+                        <div class="py-4 text-center">
+                            <p class="text-xs font-bold text-gray-400 italic">Aucun locataire dans ce bien</p>
+                        </div>
+                    `}
+                </div>
+
+                <div class="bg-blue-50/50 p-4 rounded-3xl border border-blue-100">
+                    <p class="text-[9px] font-black text-blue-400 uppercase">Loyer mensuel</p>
+                    <p class="text-sm font-black text-primary-container mt-1">${Number(prop.loyer).toLocaleString()} FCFA</p>
+                </div>
+            `;
+        }
+
+        const modalElement = document.getElementById('modal-manage-property');
+        if (modalElement) {
+            modalElement.dataset.currentPropId = id;
+            toggleModal('modal-manage-property');
+        }
+    }, { onlyOnce: true });
+};  
+window.openPaymentModal = (id, nom, loyer) => {
+    document.getElementById('pay-property-id').value = id;
+    document.getElementById('pay-property-name').innerText = `Paiement : ${nom}`;
+    document.getElementById('pay-amount').value = loyer;
+    toggleModal('modal-pay-rent');
+};
+document.getElementById('form-add-payment').addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const propId = document.getElementById('pay-property-id').value;
+    const amount = document.getElementById('pay-amount').value;
+    const month = document.getElementById('pay-month').value;
+
+    // On crée une transaction unique
+    const transactionData = {
+        propertyId: propId,
+        montant: parseFloat(amount),
+        mois: month,
+        date: new Date().toLocaleDateString(),
+        timestamp: Date.now(),
+        type: "loyer"
+    };
+
+    // On pousse dans une nouvelle branche "transactions"
+    const newTransRef = push(ref(db, `users/${currentUser.uid}/transactions`));
+    
+    set(newTransRef, transactionData).then(() => {
+        alert(`Paiement de ${month} enregistré !`);
+        toggleModal('modal-pay-rent');
+        showView('home'); // Retour à l'accueil
+    });
+});
+// Ouverture et chargement des biens
+window.openExpenseModal = () => {
+    const select = document.getElementById('expense-property-id');
+    // On récupère les biens depuis ta DB (déjà configurée dans tes autres fonctions)
+    onValue(ref(db, `users/${currentUser.uid}/properties`), (snapshot) => {
+        select.innerHTML = '<option value="">Choisir le bien immobilier</option>';
+        if (snapshot.exists()) {
+            snapshot.forEach((child) => {
+                select.innerHTML += `<option value="${child.key}">${child.val().nom}</option>`;
+            });
+        }
+    });
+    toggleModal('modal-add-expense');
+};
+
+// Calcul automatique du total en temps réel
+['expense-mat', 'expense-labor'].forEach(id => {
+    document.getElementById(id).addEventListener('input', () => {
+        const mat = parseFloat(document.getElementById('expense-mat').value) || 0;
+        const labor = parseFloat(document.getElementById('expense-labor').value) || 0;
+        document.getElementById('expense-total-display').innerText = (mat + labor).toLocaleString() + " FCFA";
+    });
+});
+
+// Enregistrement final
+document.getElementById('form-add-expense').addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const mat = parseFloat(document.getElementById('expense-mat').value) || 0;
+    const labor = parseFloat(document.getElementById('expense-labor').value) || 0;
+
+    const fullExpenseData = {
+        propertyId: document.getElementById('expense-property-id').value,
+        type: document.getElementById('expense-type').value,
+        priority: document.getElementById('expense-priority').value,
+        description: document.getElementById('expense-desc').value,
+        artisan: document.getElementById('expense-artisan').value,
+        method: document.getElementById('expense-method').value,
+        costs: {
+            materials: mat,
+            labor: labor,
+            total: mat + labor
+        },
+        date: new Date().toLocaleDateString('fr-FR'),
+        timestamp: Date.now(),
+        category: 'depense' // Pour ton futur écran finance
+    };
+
+    const newExpenseRef = push(ref(db, `users/${currentUser.uid}/transactions`));
+    
+    set(newExpenseRef, fullExpenseData)
+       .then(() => {
+            // Remplacer l'alert par le Toast Elite
+            showToast("Dépense enregistrée avec succès !");
+            
+            toggleModal('modal-add-expense');
+            document.getElementById('form-add-expense').reset();
+            document.getElementById('expense-total-display').innerText = "0 FCFA";
+
+            // FORCER LA MISE À JOUR DES CHIFFRES SUR L'ACCUEIL
+            updateFinanceStats(); 
+        })
+});
+window.showToast = (message, type = 'success') => {
+    const toast = document.createElement('div');
+    toast.className = `fixed top-10 left-1/2 -translate-x-1/2 z-[200] px-6 py-3 rounded-2xl shadow-2xl text-white text-xs font-black uppercase tracking-widest animate-bounce ${type === 'success' ? 'luxury-gradient' : 'bg-red-500'}`;
+    toast.innerHTML = `<div class="flex items-center gap-3">
+        <span class="material-symbols-outlined">${type === 'success' ? 'check_circle' : 'error'}</span>
+        ${message}
+    </div>`;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+};
+window.updateFinanceStats = () => {
+    if (!currentUser) return;
+
+    const transRef = ref(db, `users/${currentUser.uid}/transactions`);
+    
+    onValue(transRef, (snapshot) => {
+        let revenuBrut = 0;
+        let totalDepenses = 0;
+
+        if (snapshot.exists()) {
+            snapshot.forEach((child) => {
+                const data = child.val();
+                // On vérifie si c'est une dépense (via ta clé 'category')
+                if (data.category === 'depense') {
+                    totalDepenses += parseFloat(data.costs.total || 0);
+                } else {
+                    // C'est un loyer encaissé
+                    revenuBrut += parseFloat(data.montant || 0);
+                }
+            });
+        }
+
+        const beneficeNet = revenuBrut - totalDepenses;
+
+        // Mise à jour des éléments HTML sur l'accueil
+        const revenueEl = document.getElementById('stat-revenue');
+        const profitEl = document.getElementById('stat-profit');
+
+        if(revenueEl) revenueEl.innerText = `${revenuBrut.toLocaleString('fr-FR')} FCFA`;
+        if(profitEl) {
+            profitEl.innerText = `${beneficeNet.toLocaleString('fr-FR')} FCFA`;
+            // Si on est en déficit, on met le texte en rouge
+            if (beneficeNet < 0) {
+                profitEl.classList.add('text-red-500');
+            } else {
+                profitEl.classList.remove('text-red-500');
+            }
+        }
+    });
+};
+// Variables globales pour stocker les données chargées
+let allPayments = [];
+let allExpenses = [];
+
+async function loadFinanceData(uid) {
+    if (!uid) return;
+    const transRef = ref(db, `users/${uid}/transactions`);
+    const propertiesRef = ref(db, `users/${uid}/properties`);
+
+    // 1. Taux d'occupation
+    onValue(propertiesRef, (snapshot) => {
+        let occupied = 0;
+        let total = 0;
+        if (snapshot.exists()) {
+            snapshot.forEach(child => {
+                total++;
+                if (child.val().status === 'occupé') occupied++;
+            });
+        }
+        const occEl = document.getElementById('fin-occupancy');
+        if (occEl) occEl.innerText = total > 0 ? Math.round((occupied / total) * 100) : 0;
+    });
+
+    // 2. Transactions (IMPORTANT : On vide les tableaux avant de les remplir)
+    onValue(transRef, (snapshot) => {
+        allPayments = []; 
+        allExpenses = [];
+        
+        if (snapshot.exists()) {
+            snapshot.forEach(child => {
+                const data = child.val();
+                if (data.category === 'depense') {
+                    allExpenses.push({
+                        id: child.key,
+                        ...data,
+                        totalExp: parseFloat(data.costs?.total || 0),
+                        typeWork: data.type || 'Maintenance',
+                        date: data.date,
+                        timestamp: data.timestamp || 0
+                    });
+                } else {
+                    allPayments.push({
+                        id: child.key,
+                        ...data,
+                        amount: parseFloat(data.montant || 0),
+                        nomBien: "Loyer encaissé",
+                        date: data.date,
+                        timestamp: data.timestamp || 0
+                    });
+                }
+            });
+        }
+        updateFinanceUI(); // On force la mise à jour de l'UI dès que les données arrivent
+    });
+}
+function updateFinanceUI() {
+    // Calculs globaux
+    const totalRevenue = allPayments.reduce((sum, p) => sum + p.amount, 0);
+    const totalExpense = allExpenses.reduce((sum, e) => sum + (e.totalExp || 0), 0);
+    const cashflow = totalRevenue - totalExpense;
+
+    // Injection dans le HTML
+    const elements = {
+        'fin-cashflow': cashflow.toLocaleString() + " FCFA",
+        'fin-maintenance': totalExpense.toLocaleString() + " F",
+        'fin-total-expense': totalExpense.toLocaleString() + " F"
+    };
+
+    for (const [id, val] of Object.entries(elements)) {
+        const el = document.getElementById(id);
+        if (el) el.innerText = val;
+    }
+
+    // Mise à jour du graphique (Même si vide, il s'initialisera)
+    renderExpenseChart(allExpenses, totalExpense);
+    
+    // Affichage de la liste des transactions
+    renderFinanceList('tout');
+}
+function renderExpenseChart(expenses, total) {
+    const types = {};
+    
+    // Regroupement des dépenses
+    expenses.forEach(e => {
+        const t = e.typeWork || e.type || 'Autre';
+        const amt = parseFloat(e.totalExp) || 0; 
+        types[t] = (types[t] || 0) + amt;
+    });
+
+    const legendContainer = document.getElementById('expense-legends');
+    const chartCircle = document.getElementById('expense-chart-circle');
+    // On récupère l'élément qui affiche le chiffre au centre
+    const totalDisplay = document.getElementById('fin-total-expense'); 
+
+    if (!legendContainer || !chartCircle) return;
+
+    legendContainer.innerHTML = '';
+    
+    // On garde tes couleurs d'origine
+    let colors = ['#001F3F', '#FFB300', '#FF4136', '#2ECC40', '#B10DC9', '#AAAAAA'];
+    let colorIndex = 0;
+    let gradientParts = [];
+    let currentPercent = 0;
+
+    Object.keys(types).forEach(type => {
+        const amount = types[type];
+        const percent = (total > 0 && amount > 0) ? Math.round((amount / total) * 100) : 0;
+        const color = colors[colorIndex % colors.length];
+
+        legendContainer.innerHTML += `
+            <div class="flex items-center gap-2 bg-white p-3 rounded-2xl shadow-sm border border-gray-50">
+                <div class="w-2 h-2 rounded-full" style="background: ${color}"></div>
+                <div class="flex flex-col">
+                    <span class="text-[9px] font-black text-gray-400 uppercase">${type}</span>
+                    <span class="text-[10px] font-bold text-primary-container">${percent}%</span>
+                </div>
+            </div>
+        `;
+
+        if (percent > 0) {
+            gradientParts.push(`${color} ${currentPercent}% ${currentPercent + percent}%`);
+            currentPercent += percent;
+        }
+        colorIndex++;
+    });
+
+    // Mise à jour du cercle avec tes couleurs
+    if(gradientParts.length > 0) {
+        chartCircle.style.background = `conic-gradient(${gradientParts.join(', ')}, #f3f4f6 ${currentPercent}% 100%)`;
+    } else {
+        chartCircle.style.background = `#f3f4f6`;
+    }
+
+    // --- LA CORRECTION : FORCE LE TEXTE EN BLANC ---
+    if (totalDisplay) {
+        totalDisplay.style.color = "#FFFFFF"; // Blanc pur
+        totalDisplay.style.fontWeight = "bold"; // Pour qu'il soit bien lisible
+    }
+}
+
+let currentFinanceType = 'tout'; // 'tout', 'revenus' ou 'depenses'
+let isShowingAllTransactions = false;
+
+window.applyFinanceFilters = () => {
+    // Récupération des valeurs des menus déroulants
+    const month = document.getElementById('filter-month')?.value || "";
+    const year = document.getElementById('filter-year')?.value || "";
+    
+    // Appel du rendu avec tous les paramètres
+    renderFinanceList(currentFinanceType, month, year);
+};
+function renderFinanceList(type, filterMonth = "", filterYear = "") {
+    currentFinanceType = type; // Mémorise le type choisi
+    const list = document.getElementById('finance-history-list');
+    if (!list) return;
+    list.innerHTML = '';
+    
+    let combined = [];
+
+    // --- ÉTAPE 1 : COLLECTE ET FILTRAGE ---
+    // Traitement des Revenus
+    if (type === 'tout' || type === 'revenus') {
+        allPayments.forEach(p => {
+            const matchM = filterMonth ? p.mois === filterMonth : true;
+            const matchY = filterYear ? p.date.includes(filterYear) : true;
+            if (matchM && matchY) combined.push({ ...p, isRev: true });
+        });
+    }
+
+    // Traitement des Dépenses
+    if (type === 'tout' || type === 'depenses') {
+        allExpenses.forEach(e => {
+            // Note : pour les dépenses, on cherche le mois dans la string date (ex: "12/04/2026")
+            const matchM = filterMonth ? e.date.includes(filterMonth) : true;
+            const matchY = filterYear ? e.date.includes(filterYear) : true;
+            if (matchM && matchY) combined.push({ ...e, isRev: false });
+        });
+    }
+
+    // --- ÉTAPE 2 : TRI PAR DATE (Le plus récent d'abord) ---
+    combined.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+    // --- ÉTAPE 3 : LIMITATION ---
+    const itemsToDisplay = isShowingAllTransactions ? combined : combined.slice(0, 5);
+
+    if (itemsToDisplay.length === 0) {
+        list.innerHTML = `
+            <div class="py-12 text-center opacity-50">
+                <span class="material-symbols-outlined text-4xl block mb-2">history_toggle_off</span>
+                <p class="text-[10px] font-black uppercase tracking-widest">Aucune transaction trouvée</p>
+            </div>`;
+        return;
+    }
+
+    // --- ÉTAPE 4 : GÉNÉRATION DU HTML ---
+    itemsToDisplay.forEach(item => {
+        const amt = item.isRev ? item.amount : item.totalExp;
+        const icon = item.isRev ? 'south_west' : 'build';
+        const colorClass = item.isRev ? 'text-green-600' : 'text-red-600';
+        const bgClass = item.isRev ? 'bg-green-50' : 'bg-red-50';
+        const propertyName = item.nomProperty || item.nomBien || "Villa de Mikalou";
+
+        list.innerHTML += `
+            <div class="bg-white p-3 rounded-2xl shadow-sm border border-gray-50 flex items-center justify-between mb-2 max-w-md mx-auto active:scale-[0.98] transition-all">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl ${bgClass} ${colorClass} flex items-center justify-center">
+                        <span class="material-symbols-outlined text-lg">${icon}</span>
+                    </div>
+                    <div>
+                        <p class="text-[11px] font-black text-primary-container capitalize">${propertyName}</p>
+                        <p class="text-[9px] text-gray-400 font-bold uppercase">
+                            ${item.isRev ? 'Mois: ' + (item.mois || '-') : (item.description || 'Maintenance')}
+                        </p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-xs font-black ${colorClass}">${item.isRev ? '+' : '-'}${Number(amt).toLocaleString()} F</p>
+                    <p class="text-[8px] text-gray-300 font-bold">${item.date}</p>
+                </div>
+            </div>`;
+    });
+}
+// 3. La fonction que ton bouton HTML appelle
+window.showAllTransactions = () => {
+    isShowingAllTransactions = !isShowingAllTransactions;
+    
+    const btn = document.querySelector('button[onclick="showAllTransactions()"]');
+    if(btn) {
+        btn.innerText = isShowingAllTransactions ? "Réduire" : "Tout voir";
+    }
+
+    window.applyFinanceFilters();
+};
+
+
+// --- SYSTÈME DE FILTRE PAR DATE / MOIS / ANNÉE ---
+window.filterFinanceByDate = (month, year) => {
+    // Exemple : month = "Janvier", year = "2026"
+    const filtered = allPayments.filter(p => {
+        const matchMonth = month ? p.mois === month : true;
+        const matchYear = year ? p.date.includes(year) : true;
+        return matchMonth && matchYear;
+    });
+    // Appliquer ensuite le rendu avec ces données filtrées
+};
+
+window.filterFinance = (mode) => {
+    // Mise à jour visuelle des boutons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active', 'bg-secondary-fixed', 'shadow-md', 'text-primary-container');
+        btn.classList.add('bg-white', 'text-gray-400', 'border', 'border-gray-100');
+    });
+    
+    const activeBtnId = mode === 'tout' ? 'btn-filter-all' : (mode === 'revenus' ? 'btn-filter-rev' : 'btn-filter-exp');
+    const el = document.getElementById(activeBtnId);
+    if(el) {
+        el.classList.add('active', 'bg-secondary-fixed', 'text-primary-container', 'shadow-md');
+        el.classList.remove('bg-white', 'text-gray-400', 'border');
+    }
+
+    currentFinanceType = mode;
+    window.applyFinanceFilters();
+};
+window.openFullPatrimoine = () => {
+    // 1. On ouvre le modal
+    toggleModal('modal-view-all');
+    
+    // 2. On charge les données
+    const container = document.getElementById('full-property-list');
+    
+    // Sécurité si l'élément n'est pas encore rendu ou si l'utilisateur est déconnecté
+    if (!container) return;
+    if (!currentUser) {
+        container.innerHTML = '<p class="text-center text-gray-400 text-[10px] py-10 font-bold uppercase">Session expirée...</p>';
+        return;
+    }
+
+    container.innerHTML = '<p class="text-center text-gray-400 text-[10px] py-10 font-bold uppercase animate-pulse">Synchronisation...</p>';
+
+    const dbRef = ref(db, `users/${currentUser.uid}/properties`);
+    
+    onValue(dbRef, (snapshot) => {
+        container.innerHTML = "";
+        
+        if (!snapshot.exists()) {
+            container.innerHTML = `
+                <div class="py-20 text-center opacity-30">
+                    <span class="material-symbols-outlined text-5xl">inventory_2</span>
+                    <p class="text-[10px] font-black uppercase mt-2">Patrimoine vide</p>
+                </div>`;
+            return;
+        }
+
+        snapshot.forEach((child) => {
+            const prop = child.val();
+            const isOccupied = prop.status === "occupé";
+            
+            // Sécurité pour le prix
+            const price = prop.loyer ? Number(prop.loyer).toLocaleString() : "0";
+            
+            container.innerHTML += `
+                <div class="bg-white p-4 rounded-[2rem] shadow-sm border border-gray-100 flex items-center gap-4 active:scale-[0.98] transition-all mb-1">
+                    <div class="w-12 h-12 rounded-2xl ${isOccupied ? 'bg-blue-50 text-primary-container' : 'bg-gray-50 text-gray-400'} flex items-center justify-center">
+                        <span class="material-symbols-outlined text-xl">${isOccupied ? 'person' : 'home_work'}</span>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-black text-primary-container text-sm capitalize">${prop.nom || 'Sans nom'}</h4>
+                        <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest leading-none">${prop.location || 'Brazzaville, Congo'}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[10px] font-black ${isOccupied ? 'text-green-600' : 'text-gray-400'} uppercase leading-none mb-1">${prop.status}</p>
+                        <p class="text-[10px] text-primary-container font-black">${price} F</p>
+                    </div>
+                </div>`;
+        });
+    }, (error) => {
+        console.error("Erreur Firebase:", error);
+        container.innerHTML = `<p class="text-center text-red-400 text-[10px] py-10 font-bold uppercase">Erreur de chargement</p>`;
+    });
+};
+let currentRating = 0;
+
+// Fonction pour gérer la sélection des étoiles
+window.setRating = (val) => {
+    currentRating = val;
+    const stars = document.querySelectorAll('.star-btn');
+    stars.forEach((star, index) => {
+        if (index < val) {
+            star.classList.remove('text-white/20');
+            star.classList.add('text-secondary-fixed'); // Étoile allumée
+            star.style.transform = "scale(1.2)";
+        } else {
+            star.classList.remove('text-secondary-fixed');
+            star.classList.add('text-white/20'); // Étoile éteinte
+            star.style.transform = "scale(1)";
+        }
+    });
+};
+
+// Fonction pour envoyer l'avis à Firebase
+window.sendFeedback = async () => {
+    const message = document.getElementById('feedback-text').value;
+    const btn = document.getElementById('btn-send-feedback');
+
+    if (currentRating === 0) {
+        alert("S'il vous plaît, donnez une note avec les étoiles.");
+        return;
+    }
+
+    btn.disabled = true;
+    btn.innerText = "ENVOI EN COURS...";
+
+    try {
+        // Chemin dans Firebase : feedbacks / ID_UTILISATEUR / TIMESTAMP
+        const feedbackRef = ref(db, `feedbacks/${currentUser.uid}/${Date.now()}`);
+        
+        await set(feedbackRef, {
+            note: currentRating,
+            commentaire: message,
+            date: new Date().toLocaleString('fr-FR'),
+            user_name: currentUser.displayName || "Utilisateur anonyme",
+            user_email: currentUser.email
+        });
+
+        // Succès
+        alert("Merci ! Votre avis nous aide à améliorer ImmoTrust.");
+        
+        // Reset
+        document.getElementById('feedback-text').value = "";
+        setRating(0);
+        showView('home'); // Retour automatique à l'accueil
+
+    } catch (error) {
+        console.error(error);
+        alert("Oups ! Impossible d'envoyer l'avis.");
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "Envoyer mon avis";
+    }
+};
+// Fonction pour sauvegarder le profil
+window.saveUserProfile = async () => {
+    const name = document.getElementById('profile-name').value;
+    const phone = document.getElementById('profile-phone').value;
+    const address = document.getElementById('profile-address').value;
+    const btn = document.getElementById('btn-save-profile');
+
+    if (!name || !phone) return alert("Le nom et le numéro sont obligatoires.");
+
+    btn.innerText = "SYNCHRONISATION...";
+    btn.disabled = true;
+
+    try {
+        const userRef = ref(db, `users/${currentUser.uid}/profile`);
+        await set(userRef, {
+            displayName: name,
+            phone: phone,
+            address: address,
+            updatedAt: new Date().toISOString()
+        });
+        
+        alert("Profil mis à jour avec succès !");
+    } catch (error) {
+        console.error(error);
+        alert("Erreur de sauvegarde.");
+    } finally {
+        btn.innerText = "ENREGISTRER LES MODIFICATIONS";
+        btn.disabled = false;
+    }
+};
+
+// Fonction pour charger les données au démarrage ou à l'ouverture de la vue
+window.loadUserProfile = () => {
+    if (!currentUser) return;
+
+    // Fonction utilitaire interne pour éviter les erreurs si un ID manque
+    const safeSetText = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = value;
+    };
+
+    const safeSetValue = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.value = value;
+    };
+
+    // 1. On remplit l'email en toute sécurité
+    safeSetText('profile-email', currentUser.email);
+
+    const userRef = ref(db, `users/${currentUser.uid}/profile`);
+    
+    onValue(userRef, (snapshot) => {
+        if (snapshot.exists()) {
+            const data = snapshot.val();
+            
+            // 2. On remplit les champs s'ils existent
+            safeSetValue('profile-name', data.displayName || "");
+            safeSetValue('profile-phone', data.phone || "");
+            safeSetValue('profile-address', data.address || "");
+            
+            // 3. Mise à jour du statut KYC sécurisée
+            if (data.phone && data.address) {
+                const statusText = document.getElementById('kyc-status-text');
+                const iconBox = document.getElementById('kyc-icon-box');
+
+                if (statusText) statusText.innerText = "Profil Complété";
+                if (iconBox) {
+                    iconBox.className = "w-12 h-12 rounded-2xl bg-blue-50 text-blue-500 flex items-center justify-center";
+                }
+            }
+        }
+    }, (error) => {
+        console.error("Erreur Firebase Profil:", error);
+    });
+};
+// --- LOGIQUE KYC ---
+
+// 1. Affiche la zone d'upload
+window.startKYC = () => {
+    const uploadSection = document.getElementById('kyc-upload-section');
+    if (uploadSection) {
+        uploadSection.classList.remove('hidden');
+        uploadSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+};
+
+// 2. Aperçu de la photo
+window.previewKYC = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const previewImg = document.getElementById('kyc-preview-img');
+        const previewContainer = document.getElementById('kyc-preview-container');
+        const uploadLabel = document.querySelector('label[for="kyc-file"]');
+
+        previewImg.src = e.target.result;
+        previewContainer.classList.remove('hidden');
+        uploadLabel.classList.add('hidden');
+    };
+    reader.readAsDataURL(file);
+};
+
+// 3. Annuler / Supprimer la photo
+window.resetKYC = () => {
+    document.getElementById('kyc-file').value = "";
+    document.getElementById('kyc-preview-container').classList.add('hidden');
+    document.querySelector('label[for="kyc-file"]').classList.remove('hidden');
+};
+
+// --- FIN LOGIQUE KYC ---
+    </script>
+    <script src="cordova.js"></script>
+</body>
+</html>
